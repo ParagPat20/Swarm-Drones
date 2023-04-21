@@ -1,0 +1,239 @@
+1. Type of Robot: Swarm Robots
+
+2. Robot Assembly Design (Proposed Diagram):
+
+
+                                                          
+
+
+
+
+
+Fig 1.1: Brushless Motor                 Fig 1.2: Camera Module                      Fig 1.3: LiDAR Sensor
+
+
+
+
+
+
+
+
+
+Fig 1.4: Ardupilot APM                     Fig 1.5: Infrared Sensor                       Fig 1.6: Raspberry Pi
+
+
+
+
+
+
+
+
+
+Fig 1.7: Ultrasonic Sensor                      Fig 1.8: Battery                                        Fig 1.9: ESC
+
+
+
+
+
+
+
+
+
+
+
+Figure 2: Component Drawings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. Components to be used:
+	
+Type of Components
+Components
+Structural Components
+3D Printing Fibre
+Brushless Motors
+Servo Motors
+Motion Components
+Aluminium Claw 
+Rotor Blades
+Electrical Components
+Batteries
+Wireless Cameras
+Raspberry Pi
+Ardupilot APM 2.8 Flight Controller
+LiDAR Sensor
+Infrared Sensors
+Ultrasonic Sensors
+ESC Circuit
+Accessories
+Rotor blade Shields
+
+
+
+
+
+
+
+
+
+
+4. The methodology of Making Robot: 
+
+            Swarm drones, also known as drone swarms or unmanned aerial vehicle (UAV) swarms, are a group of drones that operate in a coordinated manner and can perform tasks as a collective. These drones can be used for a variety of applications, such as Mapping, Surveillance, Search and Rescue and Entertainment.
+
+There will be several steps involved in the process of making swarm drones:
+
+Define the goal: Our goal is to have coordinated motions between drones by moving them forward, backward, right and left. Ability to form 3 different shapes (circle, square, triangle). Should be able to pick plastic balls of a given color, fly to a given destination and drop the ball in the cart.
+
+Design and Simulation: Swarm will contain one Main Control Unit drone and four Client drones. The first step in making swarm drones will be to design the drones. This will involve creating a computer-aided design (CAD) model. Then we will simulate the swarm for performing above goals that will provide our working and proof of concept.
+
+Selection of materials and components : 
+
+Drone bodies will be made of 3D Printing Fibres.
+
+We will use Ardupilot APM 2.8 as the Flight Controller for all the drones. 
+
+The Main Control Unit Drone will have raspberry pi as the processor which will control all the motors and will do the image processing.
+
+LiDAR sensor for creating 3D maps and depth measuring.
+
+Rotating mounted camera for Main Control Unit Drone.
+
+Ultrasonic and Infrared sensors will be used for collision avoidance. 
+
+The Client Drones will contain claws for picking up the ball and they will have wireless cameras that will be connected to the processor of the control unit.
+
+
+
+
+
+
+
+Figure 4: Block Diagram of proposed Swarm Robot
+
+
+Communication: We will use MAVLink for communication between the Main Control Unit Drone and Client Drones, as shown in figure 8. It will be used for flight control, telemetry, and data logging, transmit data such as GPS position, altitude, heading, and airspeed, as well as sensor data. It will also be used to transmit control commands, such as commands to change the UAV's flight path. 
+
+Coding: The code that controls the swarm drones is a crucial component of the system. This will include algorithms for communication, coordination, and decision-making. Swarm drones will be controlled through the use of wireless communication and GPS. By using these technologies, the drones can share information with the central controller, allowing them to coordinate their movements more effectively. The four wireless cameras of client drones will send their live footage to the processor of the control unit. The processor will combine all the images in one window, will process all the images in the window, and detect the object. Once the processor recognizes the drone camera in which the object is detected, processor will calculate distance between client drone and the object detected and will command that client drone to pick up the object as shown in figure 5.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                   Figure 5: Flowchart of claw mechanism
+  
+Assembly: Once the materials and components have been selected, the next step is to assemble the drones. This will involve soldering, wiring, and attaching various components, such as motors, batteries, and sensors.
+
+
+
+
+
+
+
+
+                 
+
+         Figure 6: Assembly
+
+Testing and debugging: Before the drones can be deployed, it is important to test and debug them to ensure that they are functioning properly. This will involve testing the drones individually and as a group, as well as troubleshooting any issues that arise.
+
+
+5. Application of the proposed Robot in a societal context: 
+Environmental monitoring and mapping: Swarm robots can be used to monitor and map large areas, such as forests or oil spills, in a cost-effective and efficient manner.
+
+Search and rescue: Swarm robots can be deployed in disaster scenarios to search for survivors, assess damage, and provide assistance.
+
+Military operations: Swarm robots can be used for surveillance, reconnaissance, and other military operations.
+
+Agriculture: Swarm robots can be used to assist with tasks such as planting, fertilizing, and harvesting crops.
+
+Entertainment: Swarm robots can be used in performances and other entertainment events to create visually impressive displays.
+
+6. Size of Robot proposed for Proof of Concept (Small Version):
+Length in cm: 30
+
+Width in cm: 30
+
+Height in cm: 8
+
+7. Size of Robot proposed as prototype (Actual Version):
+Length in cm: 45
+
+Width in cm: 45
+
+Height in cm: 10
+
+8. Timeline for Robot Making with milestones: 
+
+              
+
+    Figure 7: Timeline Graph
+
+9. Please attach the proposed outline (photography) for the understanding of the evaluation committee.
+                                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 8: Communication Diagram
+
+
+Figure 9: Swarm Overview
+
+
+Figure 10: Swarm in the environment
+No
