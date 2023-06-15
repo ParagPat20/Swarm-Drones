@@ -1,309 +1,70 @@
-#include <string.h>
-
-                  #define IBUS_BUFFSIZE 32    
-
-                  #define IBUS_MAXCHANNELS 10 // I am using only 10 channels because my TX (FlySky i6) supports max 10 channels
-
-                  #include <Servo.h>
-
-                  static uint8_t ibusIndex = 0;
-
-                  static uint8_t ibus[IBUS_BUFFSIZE] = {0};
-
-                  static uint16_t rcValue[IBUS_MAXCHANNELS];
-
-                  
-
-                  static boolean rxFrameDone;
-
-                  
-
-                  int ch_width_1;
-
-                  int ch_width_2;
-
-                  int ch_width_3;
-
-                  int ch_width_4;
-
-                  int ch_width_5;
-
-                  int ch_width_6;
-
-                  int ch_width_7;
-
-                  int ch_width_8;
-
-                  int ch_width_9;
-
-                  int ch_width_10;
-
-                  
-
-                  Servo ch1;
-
-                  Servo ch2;
-
-                  Servo ch3;
-
-                  Servo ch4;
-
-                  Servo ch5;
-
-                  Servo ch6;
-
-                  Servo ch7;
-
-                  Servo ch8;
-
-                  Servo ch9;
-
-                  Servo ch10;
-
-                  
-
-                  void setup()
-
-                  {
-
-                    Serial.begin(115200);
-
-                    ch1.attach(2);
-
-                    ch2.attach(3);
-
-                    ch3.attach(6);
-
-                    ch4.attach(5);
-
-
-
-                    ch6.attach(7);
-
-                    ch7.attach(8);
-
-                    ch8.attach(9);
-
-                    ch9.attach(10);
-
-                    ch10.attach(11);
-                    
-                    ch3.writeMicroseconds(2000);
-                    delay(2000);
-                    ch3.writeMicroseconds(1000);
-                    delay(1000);
-                  }
-
-                  
-
-                  void loop()
-
-                  {
-
-                    readRx();
-
-                   
-
-                   }
-
-                  
-
-                  void readRx()
-
-                  {
-
-                    rxFrameDone = false;
-
-                   
-
-                    if (Serial.available())
-
-                    {
-
-                      uint8_t val = Serial.read();
-
-                      // Look for 0x2040 as start of packet
-
-                      if (ibusIndex == 0 && val != 0x20)
-
-                      {
-
-                        ibusIndex = 0;
-
-                        return;
-
-                      }
-
-                      if (ibusIndex == 1 && val != 0x40)
-
-                      {
-
-                        ibusIndex = 0;
-
-                        return;
-
-                      }
-
-                  
-
-                      if (ibusIndex == IBUS_BUFFSIZE)
-
-                      {
-
-                        ibusIndex = 0;
-
-                        int high=3;
-
-                        int low=2;
-
-                        for(int i=0;i<IBUS_MAXCHANNELS; i++)
-
-                        {
-
-                          rcValue[i] = (ibus[high] << 8) + ibus[low];
-
-                          high += 2;
-
-                          low += 2;
-
-                        }
-
-                        ch_width_1 = map(rcValue[0], 1000, 2000, 1000, 2000);
-
-                        ch1.writeMicroseconds(ch_width_1);
-
-                  
-
-                        //Serial.print(ch_width_1);
-
-                        //Serial.print("     ");
-
-                  
-
-                        ch_width_2 = map(rcValue[1], 1000, 2000, 1000, 2000);
-
-                        ch2.writeMicroseconds(ch_width_2);
-
-                  
-
-                        //Serial.print(ch_width_2);
-
-                        //Serial.print("     ");
-
-                  
-
-                        ch_width_3 = map(rcValue[2], 1000, 2000, 1000, 2000);
-
-                        ch3.writeMicroseconds(ch_width_3);
-
-                  
-
-                        //Serial.print(ch_width_3);
-
-                        //Serial.print("     ");
-
-                  
-
-                        ch_width_4 = map(rcValue[3], 1000, 2000, 1000, 2000);
-
-                        ch4.writeMicroseconds(ch_width_4);
-
-                  
-
-                        //Serial.print(ch_width_4);
-
-                        //Serial.print("     ");
-
-                                    
-
-                        ch_width_5 = map(rcValue[4], 1000, 2000, 1000, 2000);
-
-                        ch5.writeMicroseconds(ch_width_5);
-
-                  
-
-                        //Serial.print(ch_width_5);
-
-                        //Serial.print("      ");
-
-                  
-
-                        ch_width_6 = map(rcValue[5], 1000, 2000, 1000, 2000);
-
-                        ch6.writeMicroseconds(ch_width_6);
-
-                  
-
-                        //Serial.print(ch_width_6);
-
-                        //Serial.print("      ");
-
-                  
-
-                        ch_width_7 = map(rcValue[6], 1000, 2000, 1000, 2000);
-
-                        ch7.writeMicroseconds(ch_width_7);
-
-                  
-
-                        //Serial.print(ch_width_7);
-
-                        //Serial.print("      ");
-
-                       
-
-                       
-
-                        ch_width_8 = map(rcValue[7], 1000, 2000, 1000, 2000);
-
-                        ch8.writeMicroseconds(ch_width_8);
-
-                        //Serial.print(ch_width_8);
-
-                        //Serial.print("     ");
-
-                       
-
-                        ch_width_9 = map(rcValue[8], 1000, 2000, 1000, 2000);
-
-                        ch9.writeMicroseconds(ch_width_9);
-
-                  
-
-                        //Serial.print(ch_width_9);
-
-                        //Serial.print("     ");
-
-                  
-
-                        ch_width_10 = map(rcValue[9], 1000, 2000, 1000, 2000);
-
-                        ch10.writeMicroseconds(ch_width_10);
-
-                  
-
-                        //Serial.print(ch_width_10);
-
-                        //Serial.println("     ");
-
-                                                  
-
-                        rxFrameDone = true;
-
-                        return;
-
-                      }
-
-                      else
-
-                      {
-
-                        ibus[ibusIndex] = val;
-
-                        ibusIndex++;
-
-                      }
-
-                    }
-
-                  }
+#include <Servo.h>
+
+Servo escFrontLeft;   // Create a servo object for the front left ESC
+Servo escFrontRight;  // Create a servo object for the front right ESC
+Servo escBackLeft;    // Create a servo object for the back left ESC
+Servo escBackRight;   // Create a servo object for the back right ESC
+
+const int throttleMin = 1000;   // Minimum pulse width for the RC controller throttle
+const int throttleMax = 2000;   // Maximum pulse width for the RC controller throttle
+const int escMin = 1000;        // Minimum ESC control signal (adjust if needed)
+const int escMax = 2000;        // Maximum ESC control signal (adjust if needed)
+
+const int rollMin = 1000;       // Minimum pulse width for roll control
+const int rollMax = 2000;       // Maximum pulse width for roll control
+const int pitchMin = 1000;      // Minimum pulse width for pitch control
+const int pitchMax = 2000;      // Maximum pulse width for pitch control
+const int yawMin = 1000;        // Minimum pulse width for yaw control
+const int yawMax = 2000;        // Maximum pulse width for yaw control
+
+int throttle = 1000;            // Initial throttle value
+int roll = 1500;                // Initial roll value
+int pitch = 1500;               // Initial pitch value
+int yaw = 1500;                 // Initial yaw value
+
+void setup() {
+  escFrontLeft.attach(9);    // Attach the front left ESC signal wire to digital pin 9
+  escFrontRight.attach(10);  // Attach the front right ESC signal wire to digital pin 10
+  escBackLeft.attach(11);    // Attach the back left ESC signal wire to digital pin 11
+  escBackRight.attach(12);   // Attach the back right ESC signal wire to digital pin 12
+  
+  escFrontLeft.writeMicroseconds(escMin);    // Send a low signal to start the front left motor off
+  escFrontRight.writeMicroseconds(escMin);   // Send a low signal to start the front right motor off
+  escBackLeft.writeMicroseconds(escMin);     // Send a low signal to start the back left motor off
+  escBackRight.writeMicroseconds(escMin);    // Send a low signal to start the back right motor off
+  
+  delay(3000);    // Delay for ESC initialization (may vary)
+}
+
+void loop() {
+  throttle = pulseIn(2, HIGH, 20000);   // Read the pulse width from RC receiver for throttle
+  roll = pulseIn(3, HIGH, 20000);       // Read the pulse width from RC receiver for roll
+  pitch = pulseIn(4, HIGH, 20000);      // Read the pulse width from RC receiver for pitch
+  yaw = pulseIn(5, HIGH, 20000);        // Read the pulse width from RC receiver for yaw
+
+  // Map the pulse width range from RC receiver to respective control signals
+  int escFrontLeftSignal = throttle;
+  int escFrontRightSignal = throttle;
+  int escBackLeftSignal = throttle;
+  int escBackRightSignal = throttle;
+
+  // Adjust the front and back motor speeds based on roll, pitch, and yaw inputs
+  escFrontLeftSignal += map(roll, rollMin, rollMax, -200, 200);        // Adjust roll control signal for front left motor
+  escFrontRightSignal -= map(roll, rollMin, rollMax, -200, 200);       // Adjust roll control signal for front right motor
+  escFrontLeftSignal += map(pitch, pitchMin, pitchMax, -200, 200);     // Adjust pitch control signal for front left motor
+  escFrontRightSignal += map(pitch, pitchMin, pitchMax, -200, 200);    // Adjust pitch control signal for front right motor
+  escBackLeftSignal -= map(yaw, yawMin, yawMax, -200, 200);            // Adjust yaw control signal for back left motor
+  escBackRightSignal += map(yaw, yawMin, yawMax, -200, 200);           // Adjust yaw control signal for back right motor
+
+  // Limit the ESC signals within the specified range
+  escFrontLeftSignal = constrain(escFrontLeftSignal, escMin, escMax);
+  escFrontRightSignal = constrain(escFrontRightSignal, escMin, escMax);
+  escBackLeftSignal = constrain(escBackLeftSignal, escMin, escMax);
+  escBackRightSignal = constrain(escBackRightSignal, escMin, escMax);
+
+  // Send the control signals to the respective ESCs
+  escFrontLeft.writeMicroseconds(escFrontLeftSignal);    // Control the front left motor
+  escFrontRight.writeMicroseconds(escFrontRightSignal);  // Control the front right motor
+  escBackLeft.writeMicroseconds(escBackLeftSignal);      // Control the back left motor
+  escBackRight.writeMicroseconds(escBackRightSignal);    // Control the back right motor
+}
