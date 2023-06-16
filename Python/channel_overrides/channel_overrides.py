@@ -13,7 +13,7 @@ vehicle.mode = VehicleMode("STABILIZE")
 # Override channels
 print("\nChannel overrides: %s" % vehicle.channels.overrides)
 
-channel_values = [1900, 1900, 1900, 1900]  # Initial throttle values for channels 1, 2, 3, 4
+channel_values = [1000, 1000, 1000, 1000]  # Initial throttle values for channels 1, 2, 3, 4
 
 print("Set throttle overrides for channels 1, 2, 3, 4 (dictionary syntax)")
 vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3]}
