@@ -77,7 +77,7 @@ def send_chout(vehicle,arduino_ip,arduino_port):
 def receive(ip,port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, port))
-    
+
 
 def Tune():
     print("Tune")

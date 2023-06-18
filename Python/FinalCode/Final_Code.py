@@ -19,4 +19,4 @@ connectall(mcu_address,cd_address,sd_address,link,link_port)
 
 
 
-ch1out, ch2out, ch3out, ch4out = vehicle.chout()
+ch1out, ch2out, ch3out, ch4out = CD.chout()
