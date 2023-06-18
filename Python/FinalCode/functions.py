@@ -25,6 +25,7 @@ from my_vehicle import MyVehicle
 import time
 import math
 import socket
+import os
 
 def WiFi():
     print("WiFi Connected")
@@ -38,6 +39,19 @@ def send(data,ip,port):
     sock.sendall(data.encode())
     response = sock.recv(1024)
     print("Response from server:", response.decode())
+
+def send_output(read_pipe, send, ip, port):
+    # This is the function that will run in the thread
+    while True:
+        # Read a line of output from the pipe
+        line = os.read(read_pipe, 1024).decode()
+
+        # Check if the line is empty (this means that the script has finished running)
+        if not line:
+            break
+
+        # Send the line as a message
+        send(line,ip,port)
 
 def send_chout(vehicle,arduino_ip,arduino_port):
     """
@@ -99,6 +113,7 @@ def connectall(mcu_address, cd_address, sd_address,link,link_port):
 
     time.sleep(2)
     send("All Vehicle Connected successfully",link,link_port)
+    return MCU,CD,SD
 
 def VehicleStats(vehicle):
     print(" Attitude: %s" % vehicle.attitude)
