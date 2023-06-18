@@ -1,9 +1,10 @@
-from dronekit import mavutil
+from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
+from pymavlink import mavutil # Needed for command message definitions
 import time
 import socket
 import threading
-
-def send_local_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
+vehicle = connect('COM6')
+def send_local_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     """
     Move vehicle in direction based on specified velocity vectors.
     """
@@ -18,6 +19,7 @@ def send_local_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration
         velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
         0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
         0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
+    vehicle.send_mavlink(msg)
     
 def send_data(vehicle,ip,port):
     """
