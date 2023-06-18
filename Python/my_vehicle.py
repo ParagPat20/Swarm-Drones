@@ -1,5 +1,4 @@
 from dronekit import connect, Vehicle
-
 class RawSERVO(object):
     """
     :param ch1out: servo1
