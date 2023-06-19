@@ -67,8 +67,8 @@ def run_commands(vehicle, commands):
         command(vehicle)
 
 # Define the commands for each vehicle
-mcu_commands = [arm, lambda v: TakeOff(v, 10), lambda v: move_forward(v, 10, 100), lambda v: move_left(v, 20, 100), lambda v: move_backward(v, 20, 100), lambda v: move_right(v, 20, 100),land]
-cd_commands = [arm, lambda v: TakeOff(v, 10), lambda v: move_forward(v, 20, 10), lambda v: move_left(v, 20, 10), lambda v: move_backward(v, 20, 10), lambda v: move_right(v, 20, 10),land]
+mcu_commands = [arm,lambda v: time.sleep(10), land]
+cd_commands = [arm,lambda v: time.sleep(10), land]
 # sd_commands = [arm, lambda v: TakeOff(v, 10), lambda v: move_forward(v, 20, 10), lambda v: move_left(v, 20, 10), lambda v: move_backward(v, 20, 10), lambda v: move_right(v, 20, 10),land]
 
 # Create a new thread for each vehicle
