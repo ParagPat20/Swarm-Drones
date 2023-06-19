@@ -23,7 +23,7 @@ from functions import *
 import threading
 
 mcu_address = 'tcp:127.0.0.1:5762'
-cd_address = 'tcp:127.0.0.1:5772'
+cd_address = '0.0.0.0:14550'
 # sd_address = 'tcp:127.0.0.1:5782'
 link = "192.168.4.2/link"
 link_port = 8888
