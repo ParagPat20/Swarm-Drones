@@ -94,9 +94,6 @@ def send_data():
 data_thread = threading.Thread(target=send_data)
 data_thread.start()
 
-send_ned_velocity(client, 5, 0, 0, 5)
-
-send_ned_velocity(client,-5 , 0 , 0 ,5)
 
 client.armed = False
 while client.armed:

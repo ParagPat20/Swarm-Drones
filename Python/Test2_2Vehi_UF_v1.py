@@ -6,7 +6,7 @@ import socket
 import argparse
 
 # Arduino IP address and port
-arduino_ip = "192.168.4.3"  # Replace with your Arduino's IP address
+arduino_ip = "192.168.4.2"  # Replace with your Arduino's IP address
 arduino_port = 8888  # Replace with the port your Arduino is listening on
 
 # Create a UDP socket
@@ -69,26 +69,6 @@ class MyVehicle(Vehicle):
         return self._raw_servo
 
 
-def send_ned_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
-    """
-    Move the vehicle in a direction based on specified velocity vectors.
-    """
-    msg = vehicle.message_factory.set_position_target_local_ned_encode(
-        0,
-        0, 0,
-        mavutil.mavlink.MAV_FRAME_LOCAL_NED,
-        0b0000111111000111,
-        0, 0, 0,
-        velocity_x, velocity_y, velocity_z,
-        0, 0, 0,
-        0, 0
-    )
-
-    for _ in range(duration):
-        vehicle.send_mavlink(msg)
-        time.sleep(1)
-
-
 def send_data(vehicle):
     """
     Continuously send data to the Arduino.
@@ -127,49 +107,30 @@ def send_data(vehicle):
 
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Control Copter and send commands in GUIDED mode')
-    parser.add_argument('--connect', help="Vehicle connection target string. If not specified, SITL automatically started and used.")
-    args = parser.parse_args()
-
-    connection_string = args.connect
-    sitl = None
-
-    # Start SITL if no connection string is specified
-    if not connection_string:
-        import dronekit_sitl
-        sitl = dronekit_sitl.start_default()
-        connection_string = sitl.connection_string()
-
-    # Connect to the Vehicle
-    print('Connecting to vehicle on: %s' % connection_string)
-    client = connect(connection_string, wait_ready=True, vehicle_class=MyVehicle)
-    print("Client connected")
+client = connect('0.0.0.0:14550', wait_ready=True, vehicle_class=MyVehicle)
+print("Client connected")
 
     # Arm the client vehicle
-    client.mode = VehicleMode("GUIDED_NOGPS")
-    client.armed = True
-    while not client.armed:
-        time.sleep(1)
+client.mode = VehicleMode("GUIDED_NOGPS")
+client.armed = True
+while not client.armed:
+    time.sleep(1)
+send_data(client)
+time.sleep(10)
 
     # Start data sending thread
-    data_thread = threading.Thread(target=send_data, args=(client,))
-    data_thread.start()
+data_thread = threading.Thread(target=send_data, args=(client,))
+data_thread.start()
 
-    # Move forward for 5 seconds
-    send_ned_velocity(client, 5, 0, 0, 5)
-
-    # Move backward for 5 seconds
-    send_ned_velocity(client, -5, 0, 0, 5)
 
     # Disarm the client vehicle
-    client.armed = False
-    while client.armed:
+client.armed = False
+while client.armed:
         time.sleep(1)
 
-    print("Completed")
-    client.close()
-    sock.close()
+print("Completed")
+client.close()
+sock.close()
 
 # from dronekit import connect, VehicleMode, LocationGlobalRelative, Vehicle
 # from pymavlink import mavutil
