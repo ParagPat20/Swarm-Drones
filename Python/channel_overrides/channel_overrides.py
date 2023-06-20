@@ -4,7 +4,7 @@ import keyboard
 import time
 
 # Connect to the Vehicle
-vehicle = connect('COM17', wait_ready=True)
+vehicle = connect('0.0.0.0:14550', wait_ready=True)
 
 # Get all original channel values (before override)
 print("Channel values from RC Tx:", vehicle.channels)

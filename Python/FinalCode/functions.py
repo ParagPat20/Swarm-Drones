@@ -6,8 +6,6 @@
 # Tune
 # Get Vehicle Stats
 # Upload all vehicle stats on Server
-    # Take ch1out, ch2out, ch3out, ch4out from Client Drone
-    # Give channel outs to Copy Drone
 # # Waiting for the command from Master..... //Optional
 # Arm the Drones //Ready to Flight
 # Arm and Take Off // 5m
@@ -21,99 +19,88 @@
 from __future__ import print_function
 from dronekit import connect, VehicleMode
 from pymavlink import mavutil # Needed for command message definitions
-from my_vehicle import MyVehicle
 import time
 import math
-import socket
-import os
+import http.client
+import json
+import http.server
+import socketserver
+from machine import Pin, PWM
+
+messages = []
+
+class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, format, *args):
+        # Disable logging of requests
+        pass
+
+    def do_POST(self):
+        if self.path == '/Terminal':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode())
+            message = data['message']
+            messages.append(message)
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'OK')
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_GET(self):
+        if self.path == '/fetch_messages':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            response_body = json.dumps({'messages': messages})
+            self.wfile.write(response_body.encode())
+        elif self.path == '/':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            with open('c:/Users/HP/OneDrive/Desktop/Server_test/index.html', 'rb') as file:
+                self.wfile.write(file.read())
+        else:
+            super().do_GET()
+
+def start_server(port=8888):
+    print("Starting server...")
+    handler = MyRequestHandler
+    with socketserver.TCPServer(('0.0.0.0', port), handler) as httpd:
+        httpd.serve_forever()
+
+def send(*args, ip='192.168.13.101', port=8888):
+    message = ' '.join(str(arg) for arg in args)  # Concatenate the arguments into a single message
+    conn = http.client.HTTPConnection(ip, port)
+    headers = {'Content-type': 'application/json'}
+    body = json.dumps({'message': message})
+    conn.request('POST', '/Terminal', body, headers)
+    response = conn.getresponse()
+    print("Response from server:", response.read().decode())
 
 def WiFi():
     print("WiFi Connected")
 
-def Create_server():
-    print("Server Created")
-
-def send(data,ip,port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ip, port))
-    sock.sendall(data.encode())
-    response = sock.recv(1024)
-    print("Response from server:", response.decode())
-
-def send_output(read_pipe, send, ip, port):
-    # This is the function that will run in the thread
-    while True:
-        # Read a line of output from the pipe
-        line = os.read(read_pipe, 1024).decode()
-
-        # Check if the line is empty (this means that the script has finished running)
-        if not line:
-            break
-
-        # Send the line as a message
-        send(line,ip,port)
-
-def send_chout(vehicle,arduino_ip,arduino_port):
-    """
-    Continuously send data to the Arduino.
-    """
-    # Create a UDP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(('', 0))  # Bind to any available port
-
-    while True:
-        try:
-            # Connect the socket to the Arduino
-            sock.connect((arduino_ip, arduino_port))
-
-            # Get the servo outputs from the client vehicle
-            servo_data = {
-                'ch1out': vehicle.raw_servo.ch1out,
-                'ch2out': vehicle.raw_servo.ch2out,
-                'ch3out': vehicle.raw_servo.ch3out,
-                'ch4out': vehicle.raw_servo.ch4out
-            }
-
-            # Combine the servo outputs into a single string
-            data = ",".join(str(value) for value in servo_data.values())
-
-            # Send the data to the Arduino
-            sock.sendto(data.encode(), (arduino_ip, arduino_port))
-
-        except Exception as e:
-            print("Error sending data:", str(e))
-
-        # Sleep for a short time before sending the next data point
-        time.sleep(0.1)
-    
-
-
-def receive(ip,port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ip, port))
-
-
 def Tune():
+    notes = [262, 294, 330, 349, 392, 440, 494, 523]
+
+    buzzer = PWM(Pin(15))
+    for note in notes:
+        buzzer.freq(note)
+        buzzer.duty_u16(1000)
+        time.sleep(2)
+    buzzer.duty_u16(0)
+
     print("Tune")
 
-def Beep():
-    print("Beep")
-
-def connectall(mcu_address, cd_address, sd_address,link,link_port):
-    
-    MCU = connect(mcu_address, wait_ready = True)
-    Beep()
-    send("MCU Connected",link,link_port)
-    CD = connect(cd_address, wait_ready = True, vehicle_class=MyVehicle)
-    Beep()
-    send("CD Connected",link,link_port)
-    SD = connect(sd_address, wait_ready = True)
-    Beep()
-    send("SD Connected",link,link_port)
-
-    time.sleep(2)
-    send("All Vehicle Connected successfully",link,link_port)
-    return MCU,CD,SD
+def Beep(number, time_gap):
+    buzzer = PWM(Pin(15))
+    for i in range(number):
+        buzzer.on()
+        time.sleep(time_gap)
+        buzzer.off()
+        time.sleep(time_gap)
 
 def VehicleStats(vehicle):
     print(" Attitude: %s" % vehicle.attitude)
@@ -122,40 +109,43 @@ def VehicleStats(vehicle):
     print("Vehicle Stats are these")
     print(" Is Armable?: %s" % vehicle.is_armable)
     print(" System status: %s" % vehicle.system_status.state)
-
-def chout(vehicle):
-    return (vehicle._raw_servo.ch1out, vehicle._raw_servo.ch2out, vehicle._raw_servo.ch3out, vehicle._raw_servo.ch4out)
     
+
 def command():
     print("Master has sent a command")
 
 def arm(vehicle):
     print("Arming motors")
+    send("Arming Motors")
     vehicle.mode = VehicleMode("GUIDED_NOGPS")
     vehicle.armed = True
 
     while not vehicle.armed:
         print(" Waiting for arming...")
+        send("waiting for Arming...")
         vehicle.armed = True
         time.sleep(1)
     print("Vehicle Armed")
 
-def TakeOff(vehicle,aTargetAltitude):
+def TakeOff(vehicle, aTargetAltitude):
 
     DEFAULT_TAKEOFF_THRUST = 0.7
     SMOOTH_TAKEOFF_THRUST = 0.6
 
     thrust = DEFAULT_TAKEOFF_THRUST
+    vehicle_name = str(vehicle)
     while True:
         current_altitude = vehicle.location.global_relative_frame.alt
         print(" Altitude: %f  Desired: %f" %
               (current_altitude, aTargetAltitude))
-        if current_altitude >= aTargetAltitude*0.95:
-            print("Reached target altitude")
+        send(vehicle_name + " Altitude =", current_altitude)  # Include vehicle name in the message
+        if current_altitude >= aTargetAltitude * 0.95:
+            print(vehicle_name + " Reached target altitude")
+            send(vehicle_name + " Reached the desired Altitude")
             break
-        elif current_altitude >= aTargetAltitude*0.6:
+        elif current_altitude >= aTargetAltitude * 0.6:
             thrust = SMOOTH_TAKEOFF_THRUST
-        set_attitude(thrust = thrust, vehicle=vehicle)
+        set_attitude(thrust=thrust, vehicle=vehicle)
         time.sleep(0.2)
 
 def send_attitude_target(roll_angle=0.0, pitch_angle=0.0,
@@ -264,7 +254,9 @@ def disarm(vehicle):
 def land(vehicle):
     vehicle.mode = VehicleMode("LAND")
     print("Landing")
+    send("Landing")
 
 def exit(vehicle):
     vehicle.close()
     print("Completed")
+    send("Completed")
