@@ -19,10 +19,10 @@
 from functions import *
 import threading
 from threading import Thread
-mcu_address = 'tcp:127.0.0.1:5762'
-cd_address = 'tcp:127.0.0.1:5772'
-sd_address = 'tcp:127.0.0.1:5782'
-link = "192.168.13.101"
+mcu_address = '0.0.0.0:14552'
+cd_address = '0.0.0.0:14550'
+sd_address = 'COM17'
+link = "192.168.4.2"
 link_port = 8888
 
 from functions import start_server
@@ -51,9 +51,9 @@ def run_commands(vehicle, commands):
     for command in commands:
         command(vehicle)
 
-mcu_commands = [arm,lambda v: TakeOff(v,3), land, exit]
-cd_commands = [arm,lambda v: TakeOff(v,3), land, exit]
-sd_commands = [arm,lambda v: TakeOff(v,3), land, exit]
+mcu_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: time.sleep(10), land, exit]
+cd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"), lambda v: time.sleep(10), land, exit]
+sd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: time.sleep(10), land, exit]
 
 mcu_thread = threading.Thread(target=run_commands, args=(MCU, mcu_commands))
 cd_thread = threading.Thread(target=run_commands, args=(CD, cd_commands))

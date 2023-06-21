@@ -47,7 +47,7 @@ def start_server(port=8888):
     with socketserver.TCPServer(('0.0.0.0', port), handler) as httpd:
         httpd.serve_forever()
 
-def send(data, ip='192.168.13.101', port=8888):
+def send(data, ip='192.168.4.2', port=8888):
     conn = http.client.HTTPConnection(ip, port)
     headers = {'Content-type': 'application/json'}
     body = json.dumps({'message': data})

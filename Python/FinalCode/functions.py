@@ -25,7 +25,7 @@ import http.client
 import json
 import http.server
 import socketserver
-from machine import Pin, PWM
+# from machine import Pin, PWM
 
 messages = []
 
@@ -44,6 +44,16 @@ class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(b'OK')
+        elif self.path == '/command':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode())
+            command = data['command']
+            # Handle the command
+            handle_command(command)
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'OK')
         else:
             self.send_response(404)
             self.end_headers()
@@ -59,7 +69,7 @@ class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('c:/Users/HP/OneDrive/Desktop/Server_test/index.html', 'rb') as file:
+            with open('c:/Users/HP/OneDrive/Documents/SwarmDrones/Server_test/index.html', 'rb') as file:
                 self.wfile.write(file.read())
         else:
             super().do_GET()
@@ -70,7 +80,16 @@ def start_server(port=8888):
     with socketserver.TCPServer(('0.0.0.0', port), handler) as httpd:
         httpd.serve_forever()
 
-def send(*args, ip='192.168.13.101', port=8888):
+def handle_command(command):
+    if command == 'force_land':
+        # Perform the force landing action here
+        print('Performing force landing...')
+        # Add your code to execute the force landing operation
+    else:
+        # Handle other commands or unrecognized commands
+        print('Unrecognized command:', command)
+        
+def send(*args, ip='192.168.4.2', port=8888):
     message = ' '.join(str(arg) for arg in args)  # Concatenate the arguments into a single message
     conn = http.client.HTTPConnection(ip, port)
     headers = {'Content-type': 'application/json'}
@@ -83,24 +102,25 @@ def WiFi():
     print("WiFi Connected")
 
 def Tune():
-    notes = [262, 294, 330, 349, 392, 440, 494, 523]
+    # notes = [262, 294, 330, 349, 392, 440, 494, 523]
 
-    buzzer = PWM(Pin(15))
-    for note in notes:
-        buzzer.freq(note)
-        buzzer.duty_u16(1000)
-        time.sleep(2)
-    buzzer.duty_u16(0)
+    # buzzer = PWM(Pin(15))
+    # for note in notes:
+    #     buzzer.freq(note)
+    #     buzzer.duty_u16(1000)
+    #     time.sleep(2)
+    # buzzer.duty_u16(0)
 
     print("Tune")
 
 def Beep(number, time_gap):
-    buzzer = PWM(Pin(15))
-    for i in range(number):
-        buzzer.on()
-        time.sleep(time_gap)
-        buzzer.off()
-        time.sleep(time_gap)
+    # buzzer = PWM(Pin(15))
+    # for i in range(number):
+    #     buzzer.on()
+    #     time.sleep(time_gap)
+    #     buzzer.off()
+    #     time.sleep(time_gap)
+    print("Beep")
 
 def VehicleStats(vehicle):
     print(" Attitude: %s" % vehicle.attitude)
@@ -114,15 +134,15 @@ def VehicleStats(vehicle):
 def command():
     print("Master has sent a command")
 
-def arm(vehicle):
+def arm(vehicle,mode = "GUDIDED_NOGPS"):
     print("Arming motors")
-    send("Arming Motors")
-    vehicle.mode = VehicleMode("GUIDED_NOGPS")
+    # send("Arming Motors")
+    vehicle.mode = VehicleMode(mode)
     vehicle.armed = True
 
     while not vehicle.armed:
         print(" Waiting for arming...")
-        send("waiting for Arming...")
+        # send("waiting for Arming...")
         vehicle.armed = True
         time.sleep(1)
     print("Vehicle Armed")
@@ -138,10 +158,10 @@ def TakeOff(vehicle, aTargetAltitude):
         current_altitude = vehicle.location.global_relative_frame.alt
         print(" Altitude: %f  Desired: %f" %
               (current_altitude, aTargetAltitude))
-        send(vehicle_name + " Altitude =", current_altitude)  # Include vehicle name in the message
+        # send(vehicle_name + " Altitude =", current_altitude)  # Include vehicle name in the message
         if current_altitude >= aTargetAltitude * 0.95:
             print(vehicle_name + " Reached target altitude")
-            send(vehicle_name + " Reached the desired Altitude")
+            # send(vehicle_name + " Reached the desired Altitude")
             break
         elif current_altitude >= aTargetAltitude * 0.6:
             thrust = SMOOTH_TAKEOFF_THRUST

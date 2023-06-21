@@ -6,7 +6,7 @@ import requests
 
 
 # Connect to the Vehicle
-vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
+vehicle = connect('COM17', wait_ready=True)
 
 ###########################################################################______________MANDATORY FUNCTIONS_______####################################################
 
@@ -89,7 +89,7 @@ def arm_and_takeoff_nogps(desired_altitude):
     DEFAULT_TAKEOFF_THRUST = 1
     SMOOTH_TAKEOFF_THRUST = 0.7
 
-    vehicle.mode = VehicleMode("GUIDED_NOGPS")
+    vehicle.mode = VehicleMode("GUIDED")
     vehicle.armed = True
     print("arming")
     while not vehicle.armed:
