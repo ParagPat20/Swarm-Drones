@@ -6,7 +6,7 @@ import requests
 
 
 # Connect to the Vehicle
-vehicle = connect('COM17', wait_ready=True)
+vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
 
 ###########################################################################______________MANDATORY FUNCTIONS_______####################################################
 

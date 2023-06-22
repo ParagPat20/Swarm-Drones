@@ -27,77 +27,6 @@ import http.server
 import socketserver
 # from machine import Pin, PWM
 
-messages = []
-
-class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
-    def log_message(self, format, *args):
-        # Disable logging of requests
-        pass
-
-    def do_POST(self):
-        if self.path == '/Terminal':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            data = json.loads(post_data.decode())
-            message = data['message']
-            messages.append(message)
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b'OK')
-        elif self.path == '/command':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            data = json.loads(post_data.decode())
-            command = data['command']
-            # Handle the command
-            handle_command(command)
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b'OK')
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def do_GET(self):
-        if self.path == '/fetch_messages':
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            response_body = json.dumps({'messages': messages})
-            self.wfile.write(response_body.encode())
-        elif self.path == '/':
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            with open('c:/Users/HP/OneDrive/Documents/SwarmDrones/Server_test/index.html', 'rb') as file:
-                self.wfile.write(file.read())
-        else:
-            super().do_GET()
-
-def start_server(port=8888):
-    print("Starting server...")
-    handler = MyRequestHandler
-    with socketserver.TCPServer(('0.0.0.0', port), handler) as httpd:
-        httpd.serve_forever()
-
-def handle_command(command):
-    if command == 'force_land':
-        # Perform the force landing action here
-        print('Performing force landing...')
-        # Add your code to execute the force landing operation
-    else:
-        # Handle other commands or unrecognized commands
-        print('Unrecognized command:', command)
-        
-def send(*args, ip='192.168.4.2', port=8888):
-    message = ' '.join(str(arg) for arg in args)  # Concatenate the arguments into a single message
-    conn = http.client.HTTPConnection(ip, port)
-    headers = {'Content-type': 'application/json'}
-    body = json.dumps({'message': message})
-    conn.request('POST', '/Terminal', body, headers)
-    response = conn.getresponse()
-    print("Response from server:", response.read().decode())
-
 def WiFi():
     print("WiFi Connected")
 
@@ -235,6 +164,7 @@ def move_forward(vehicle, duration, distance):
     """
     speed = distance / duration
     pitch_angle = -speed
+    print("Moving Forward")
     set_attitude(pitch_angle=pitch_angle, duration=duration, vehicle=vehicle)
 
 def move_backward(vehicle, duration, distance):
@@ -243,6 +173,7 @@ def move_backward(vehicle, duration, distance):
     """
     speed = distance / duration
     pitch_angle = speed
+    print("Moving Backward")
     set_attitude(pitch_angle=pitch_angle, duration=duration, vehicle=vehicle)
 
 def move_left(vehicle, duration, distance):
@@ -251,6 +182,7 @@ def move_left(vehicle, duration, distance):
     """
     speed = distance / duration
     roll_angle = speed
+    print("Moving Left")
     set_attitude(roll_angle=roll_angle, duration=duration, vehicle=vehicle)
 
 def move_right(vehicle, duration, distance):
@@ -259,6 +191,7 @@ def move_right(vehicle, duration, distance):
     """
     speed = distance / duration
     roll_angle = -speed
+    print("Moving Right")
     set_attitude(roll_angle=roll_angle, duration=duration, vehicle=vehicle)
 
 def disarm(vehicle):
@@ -274,9 +207,7 @@ def disarm(vehicle):
 def land(vehicle):
     vehicle.mode = VehicleMode("LAND")
     print("Landing")
-    send("Landing")
 
 def exit(vehicle):
     vehicle.close()
     print("Completed")
-    send("Completed")

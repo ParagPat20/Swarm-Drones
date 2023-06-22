@@ -19,48 +19,44 @@
 from functions import *
 import threading
 from threading import Thread
-mcu_address = '0.0.0.0:14552'
-cd_address = '0.0.0.0:14550'
-sd_address = 'COM17'
+mcu_address = 'tcp:127.0.0.1:5762'#'0.0.0.0:14552'
+# cd_address = '0.0.0.0:14550'
+# sd_address = 'COM17'
 link = "192.168.4.2"
 link_port = 8888
 
-from functions import start_server
-server_thread = threading.Thread(target=start_server)
-server_thread.start()
+# from functions import start_server
+# server_thread = threading.Thread(target=start_server)
+# server_thread.start()
 
 MCU = connect(mcu_address, wait_ready = True)
-Beep(4,0.1)
-send("MCU Connected")
-CD = connect(cd_address, wait_ready = True)
-Beep(4,0.2)
-send("CD Connected")
-SD = connect(sd_address, wait_ready = True)
-Beep(4,0.3)
-send("SD Connected")
+# Beep(4,0.1)
+# send("MCU Connected")
+# CD = connect(cd_address, wait_ready = True)
+# Beep(4,0.2)
+# send("CD Connected")
+# SD = connect(sd_address, wait_ready = True)
+# Beep(4,0.3)
+# send("SD Connected")
 
 time.sleep(2)
-send("All Vehicle Connected successfully")
-Tune()
+# send("All Vehicle Connected successfully")
 
-VehicleStats(MCU)
-VehicleStats(CD)
-VehicleStats(SD)
+
+# VehicleStats(SD)
 
 def run_commands(vehicle, commands):
     for command in commands:
         command(vehicle)
 
-mcu_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: time.sleep(10), land, exit]
-cd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"), lambda v: time.sleep(10), land, exit]
-sd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: time.sleep(10), land, exit]
+mcu_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: TakeOff(v,10),lambda v: move_forward(v,3,10),lambda v: move_left(v,10,10),lambda v: move_backward(v,10,10), land, disarm, exit]
+# cd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"), lambda v: time.sleep(10), land, exit]
+# sd_commands = [lambda v:arm(v,mode = "GUIDED_NOGPS"),lambda v: time.sleep(10), land, exit]
 
 mcu_thread = threading.Thread(target=run_commands, args=(MCU, mcu_commands))
-cd_thread = threading.Thread(target=run_commands, args=(CD, cd_commands))
-sd_thread = threading.Thread(target=run_commands, args=(SD, sd_commands))
+# cd_thread = threading.Thread(target=run_commands, args=(CD, cd_commands))
+# sd_thread = threading.Thread(target=run_commands, args=(SD, sd_commands))
 
 mcu_thread.start()
-cd_thread.start()
-sd_thread.start()
-
-Tune()
+# cd_thread.start()
+# sd_thread.start()
