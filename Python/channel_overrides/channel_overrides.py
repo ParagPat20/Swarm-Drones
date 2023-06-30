@@ -4,19 +4,18 @@ import keyboard
 import time
 
 # Connect to the Vehicle
-vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True)
+vehicle = connect('0.0.0.0:14550', wait_ready=True)
 
 # Get all original channel values (before override)
 print("Channel values from RC Tx:", vehicle.channels)
-vehicle.mode = VehicleMode("STABILIZE")
 
 # Override channels
 print("\nChannel overrides: %s" % vehicle.channels.overrides)
 
-channel_values = [1500, 1500, 1000, 1500]  # Initial channel values for throttle, roll, yaw, pitch
+channel_values = [1500, 1500, 1000, 1500, 1000]  # Initial channel values for throttle, roll, yaw, pitch
 
 print("Set throttle, roll, yaw, and pitch overrides (dictionary syntax)")
-vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3]}
+vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3], '5': channel_values[4]}
 print("Channel overrides: %s" % vehicle.channels.overrides)
 
 print("Press 'w' to increase throttle by 100")
@@ -140,14 +139,15 @@ while True:
 
     elif keyboard.is_pressed('r'):
         print("Vehicle Disarmed")
-        vehicle.armed = False
-        break
+        channel_values[4] = 1000
+        vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3], '5': channel_values[4]}
 
     elif keyboard.is_pressed('l'):
         current_time = time.time()
         if current_time - last_l_press_time >= delay:
-            vehicle.armed = True
+            channel_values[4] = 2000
             print("Vehicle Armed")
+            vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3], '5': channel_values[4]}
             last_a_press_time = current_time
 
 print("Completed")
