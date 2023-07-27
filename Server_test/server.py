@@ -36,7 +36,7 @@ class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('c:/Users/HP/OneDrive/Desktop/Server_test/index.html', 'rb') as file:
+            with open('c:/Users/HP/OneDrive/Documents/SwarmDrones/Server_Test/index.html', 'rb') as file:
                 self.wfile.write(file.read())
         else:
             super().do_GET()
@@ -47,7 +47,7 @@ def start_server(port=8888):
     with socketserver.TCPServer(('0.0.0.0', port), handler) as httpd:
         httpd.serve_forever()
 
-def send(data, ip='192.168.4.2', port=8888):
+def send(data, ip='192.168.190.101', port=8888):
     conn = http.client.HTTPConnection(ip, port)
     headers = {'Content-type': 'application/json'}
     body = json.dumps({'message': data})

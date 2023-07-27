@@ -50,10 +50,6 @@ send("All Vehicles Connected successfully")
 
 def run_mcu():
     mcu.arm(mode="GUIDED_NOGPS")
-    mcu.takeoff(10)
-    mcu.move_forward(3, 10)
-    mcu.move_left(10, 10)
-    mcu.move_backward(10, 10)
     mcu.land()
     mcu.disarm()
     mcu.exit()

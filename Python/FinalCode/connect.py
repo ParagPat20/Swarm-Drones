@@ -1,7 +1,7 @@
 from pymavlink import mavutil
 
 # Start a connection listening to a UDP port
-the_connection = mavutil.mavlink_connection('udpin:0.0.0.0:14550')
+the_connection = mavutil.mavlink_connection('udpin:0.0.0.0:14552')
 
 # Wait for the first heartbeat
 #   This sets the system and component ID of remote system for the link

@@ -125,9 +125,9 @@ class Copter:
         print(" Is Armable?: %s" % self.is_armable)
         print(" System status: %s" % self.system_status.state)
 
-    def arm(self):
+    def arm(self,mode):
         print("Arming motors")
-        self.vehicle.mode = VehicleMode("GUIDED_NOGPS")
+        self.vehicle.mode = VehicleMode(mode)
         self.vehicle.armed = True
 
         while not self.vehicle.armed:
@@ -149,7 +149,7 @@ class Copter:
                 break
             elif current_altitude >= target_altitude * 0.6:
                 thrust = SMOOTH_TAKEOFF_THRUST
-            self.set_attitude(pitch_angle=2, thrust=thrust)
+            self.set_attitude(thrust=thrust)
             time.sleep(0.2)
 
     def send_attitude_target(self, roll_angle=0.0, pitch_angle=0.0,
