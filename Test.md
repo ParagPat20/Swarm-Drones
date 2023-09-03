@@ -1,1 +1,0 @@
-Bas kuchh karna tha

@@ -1,7 +1,7 @@
 import threading
 import time
 from dronekit import connect
-from functions import start_server, send, Copter
+from functions import Copter
 
 mcu_address = 'tcp:127.0.0.1:5762'
 # cd_address = '0.0.0.0:14550'
@@ -27,9 +27,8 @@ print("Connected to CD")
 # send("CD Connected")
 
 def run_mcu():
-    mcu.arm(mode="GUIDED")
-    mcu.takeoff(3)
-    time.sleep(1)
+    mcu.arm(mode="GUIDED_NOGPS")
+    time.sleep(10)
     mcu.land()
     mcu.disarm()
     mcu.exit()
