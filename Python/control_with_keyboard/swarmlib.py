@@ -31,7 +31,7 @@ class Drone:
             current_altitude = self.vehicle.location.global_relative_frame.alt
             if current_altitude is not None:
                 print(" Altitude: ", current_altitude)
-                if current_altitude >= aTargetAltitude * 0.95:
+                if current_altitude >= aTargetAltitude * 0.8:
                     print("Reached target altitude")
                     break
                 if keyboard.is_pressed('b'):
@@ -40,6 +40,37 @@ class Drone:
             else:
                 print("Waiting for altitude information...")
             time.sleep(1)
+    
+    def takeoff_channel(self, aTargetAltitude):
+        print("Taking off!")
+        throttle_channel = 3  # Throttle channel
+        throttle_increment = 30  # Increment in throttle value]
+        throttle = 1000
+        self.arm(mode='STABILIZE')
+        current_throttle = throttle
+        self.vehicle.channels.overrides[throttle_channel] = current_throttle
+        while self.vehicle.location.global_relative_frame.alt < aTargetAltitude:
+            current_altitude = self.vehicle.location.global_relative_frame.alt
+            print(f"Current Altitude: {current_altitude} meters")
+
+        # Incrementally increase throttle
+            new_throttle = min(current_throttle + throttle_increment, 2000)
+            current_throttle = new_throttle
+        # Set channel override for throttle
+            self.vehicle.channels.overrides[throttle_channel] = new_throttle
+            time.sleep(1)
+
+            if current_altitude >= aTargetAltitude * 0.8:
+                    print("Reached target altitude")
+                    break
+
+            if keyboard.is_pressed('b'):
+                    self.vehicle.mode = VehicleMode('LAND')
+                    break
+        self.vehicle.mode = VehicleMode('GUIDED')
+        self.vehicle.channels.overrides[throttle_channel] = new_throttle
+        self.control_with_keyboard()
+        print("Reached target altitude. Hovering...")
 
     def arm(self,mode='GUIDED'):
         print("Arming motors")
@@ -81,7 +112,7 @@ class Drone:
         vel_z = 0
 
         # Define the maximum velocity (m/s)
-        MAX_VELOCITY = 0.1
+        MAX_VELOCITY = 0.5
 
         print("Use arrow keys to control the drone. Press 'Esc' to exit.")
 
@@ -119,7 +150,7 @@ class Drone:
             if keyboard.is_pressed('m'):
                 self.arm()
             if keyboard.is_pressed('n'):
-                self.takeoff(1)
+                self.takeoff_channel(1)
             if keyboard.is_pressed('l'):
                 self.land()
             if keyboard.is_pressed('q'):
