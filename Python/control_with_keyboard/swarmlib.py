@@ -34,6 +34,9 @@ class Drone:
                 if current_altitude >= aTargetAltitude * 0.95:
                     print("Reached target altitude")
                     break
+                if keyboard.is_pressed('b'):
+                    self.vehicle.mode = VehicleMode('LAND')
+                    break
             else:
                 print("Waiting for altitude information...")
             time.sleep(1)
@@ -47,6 +50,8 @@ class Drone:
             print("Waiting for arming...")
             self.vehicle.armed = True
             time.sleep(1)
+            if keyboard.is_pressed('q'):
+                break
         print("Vehicle Armed")
 
     def disarm(self):
@@ -57,6 +62,8 @@ class Drone:
             print("Waiting for disarming...")
             self.vehicle.armed = False
             time.sleep(1)
+            if keyboard.is_pressed('q'):
+                break
         print("Vehicle Disarmed")
 
     def land(self):
@@ -74,30 +81,36 @@ class Drone:
         vel_z = 0
 
         # Define the maximum velocity (m/s)
-        MAX_VELOCITY = 1
+        MAX_VELOCITY = 0.1
 
         print("Use arrow keys to control the drone. Press 'Esc' to exit.")
 
         while True:
             # Check for key presses to control the drone
-            if keyboard.is_pressed('up'):
+            if keyboard.is_pressed('w'):
                 vel_x = MAX_VELOCITY  # Move forward
-            elif keyboard.is_pressed('down'):
+                print('w')
+            elif keyboard.is_pressed('s'):
                 vel_x = -MAX_VELOCITY  # Move backward
+                print('s')
             else:
                 vel_x = 0
 
-            if keyboard.is_pressed('left'):
+            if keyboard.is_pressed('a'):
                 vel_y = -MAX_VELOCITY  # Move left
-            elif keyboard.is_pressed('right'):
+                print('a')
+            elif keyboard.is_pressed('d'):
                 vel_y = MAX_VELOCITY  # Move right
+                print('d')
             else:
                 vel_y = 0
 
-            if keyboard.is_pressed('w'):
+            if keyboard.is_pressed('u'):
                 vel_z = -MAX_VELOCITY  # Increase altitude
-            elif keyboard.is_pressed('s'):
+                print('u')
+            elif keyboard.is_pressed('j'):
                 vel_z = MAX_VELOCITY  # Decrease altitude
+                print('j')
             else:
                 vel_z = 0
 
@@ -207,4 +220,7 @@ class DroneGUI:
         # Start the GUI update loop
         self.update_gui()
         self.root.mainloop()
-
+    
+    def exit(self):
+        self.root.destroy()
+        self.vehicle.close()
