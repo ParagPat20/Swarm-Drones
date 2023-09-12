@@ -178,7 +178,7 @@ class Drone:
         last_u_press_time = 0
         last_j_press_time = 0
         delay = 0.2  # Adjust the delay time as needed (in seconds)
-
+        self.vehicle.channels.overrides[1,2,3,4] = [1500,1500,1000,1500]
         while True:
             # Initialize Channels
             if keyboard.is_pressed('u'):
