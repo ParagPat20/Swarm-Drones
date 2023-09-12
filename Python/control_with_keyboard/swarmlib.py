@@ -165,6 +165,7 @@ class Drone:
                 print("Can not control the drone anymore")
                 break
     def control_stabilized(self):
+        print("Controlling with Stabilize Mode")
         ROLL = 1500
         PITCH = 1500
         YAW = 1500
@@ -178,7 +179,11 @@ class Drone:
         last_u_press_time = 0
         last_j_press_time = 0
         delay = 0.2  # Adjust the delay time as needed (in seconds)
-        self.vehicle.channels.overrides[1,2,3,4] = [1500,1500,1000,1500]
+        self.vehicle.channels.overrides[1] = 1500  # ROLL channel
+        self.vehicle.channels.overrides[2] = 1500  # PITCH channel
+        self.vehicle.channels.overrides[3] = 1000  # THROTTLE channel
+        self.vehicle.channels.overrides[4] = 1500  # YAW channel
+
         while True:
             # Initialize Channels
             if keyboard.is_pressed('u'):
@@ -260,6 +265,7 @@ class Drone:
 
             # write an autotune code for the vehicle
             if keyboard.is_pressed('m'):
+                print("Autotuning")
                 self.vehicle.mode = VehicleMode('POSHOLD')
                 time.sleep(5)
                 self.vehicle.mode = VehicleMode('AUTOTUNE')
@@ -293,6 +299,8 @@ class Drone:
                 self.vehicle.mode = VehicleMode('POSHOLD')
                 time.sleep(5)
 
+
+import tkinter as tk
 
 import tkinter as tk
 
@@ -336,6 +344,16 @@ class DroneGUI:
         self.battery_voltage_label = tk.Label(self.root, text="Battery Voltage: ")
         self.battery_voltage_label.pack()
 
+        # Labels for throttle, yaw, roll, and pitch
+        self.throttle_label = tk.Label(self.root, text="Throttle: ")
+        self.throttle_label.pack()
+        self.yaw_label = tk.Label(self.root, text="Yaw: ")
+        self.yaw_label.pack()
+        self.roll_label = tk.Label(self.root, text="Roll: ")
+        self.roll_label.pack()
+        self.pitch_label = tk.Label(self.root, text="Pitch: ")
+        self.pitch_label.pack()
+
     def update_gui(self):
         try:
             # Access vehicle attributes, and if successful, the vehicle is connected
@@ -346,6 +364,10 @@ class DroneGUI:
             groundspeed = self.vehicle.groundspeed
             gps_status = self.vehicle.gps_0.fix_type
             battery_voltage = self.vehicle.battery.voltage
+            throttle = self.vehicle.channels['3']  # Assuming throttle is on channel 3
+            yaw = self.vehicle.channels['4']  # Assuming yaw is on channel 4
+            roll = self.vehicle.channels['1']  # Assuming roll is on channel 1
+            pitch = self.vehicle.channels['2']  # Assuming pitch is on channel 2
 
             # Update GUI labels with vehicle data
             self.connection_label.config(text="Connected")
@@ -360,6 +382,10 @@ class DroneGUI:
             self.groundspeed_label.config(text=f"Groundspeed: {groundspeed:.2f} m/s")
             self.gps_status_label.config(text=f"GPS Status: {gps_status}")
             self.battery_voltage_label.config(text=f"Battery Voltage: {battery_voltage:.2f} V")
+            self.throttle_label.config(text=f"Throttle: {throttle}")
+            self.yaw_label.config(text=f"Yaw: {yaw}")
+            self.roll_label.config(text=f"Roll: {roll}")
+            self.pitch_label.config(text=f"Pitch: {pitch}")
 
         except Exception as e:
             # Handle the exception when the vehicle is disconnected
@@ -375,6 +401,10 @@ class DroneGUI:
             self.groundspeed_label.config(text="Groundspeed: N/A")
             self.gps_status_label.config(text="GPS Status: N/A")
             self.battery_voltage_label.config(text="Battery Voltage: N/A")
+            self.throttle_label.config(text="Throttle: N/A")
+            self.yaw_label.config(text="Yaw: N/A")
+            self.roll_label.config(text="Roll: N/A")
+            self.pitch_label.config(text="Pitch: N/A")
 
         # Schedule the update every 1000 milliseconds (1 second)
         self.root.after(1000, self.update_gui)
