@@ -68,9 +68,9 @@ class Drone:
                     self.vehicle.mode = VehicleMode('LAND')
                     break
         self.vehicle.mode = VehicleMode('GUIDED')
-        self.vehicle.channels.overrides[throttle_channel] = new_throttle
-        self.control_with_keyboard()
         print("Reached target altitude. Hovering...")
+        self.vehicle.channels.overrides[throttle_channel] = 1500
+        self.control_with_keyboard()
 
     def arm(self,mode='GUIDED'):
         print("Arming motors")
