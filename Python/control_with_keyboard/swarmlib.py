@@ -155,12 +155,144 @@ class Drone:
                 self.land()
             if keyboard.is_pressed('q'):
                 self.disarm()
+            
+            if keyboard.is_pressed('p'):
+                self.control_stabilized()
 
             # Exit the loop if the 'Esc' key is pressed
             if keyboard.is_pressed('esc'):
                 self.send_ned_velocity(0, 0, 0, 1)  # Stop the drone before exiting
                 print("Can not control the drone anymore")
                 break
+    def control_stabilized(self):
+        ROLL = 1500
+        PITCH = 1500
+        YAW = 1500
+        THROTTLE = 1000
+        last_w_press_time = 0
+        last_s_press_time = 0
+        last_a_press_time = 0
+        last_d_press_time = 0
+        last_q_press_time = 0
+        last_e_press_time = 0
+        last_u_press_time = 0
+        last_j_press_time = 0
+        delay = 0.2  # Adjust the delay time as needed (in seconds)
+
+        while True:
+            # Initialize Channels
+            if keyboard.is_pressed('u'):
+                current_time = time.time()
+                if current_time - last_u_press_time >= delay:
+                    THROTTLE +=20
+                    self.vehicle.channels.overrides[3] = min(THROTTLE,1000,max(THROTTLE,2000))
+                    last_u_press_time = current_time
+            
+            if keyboard.is_pressed('j'):
+                current_time = time.time()
+                if current_time - last_j_press_time >= delay:
+                    THROTTLE -=20
+                    self.vehicle.channels.overrides[3] = min(THROTTLE,1000,max(THROTTLE,2000))
+                    last_j_press_time = current_time
+
+            if keyboard.is_pressed('w'):
+                current_time = time.time()
+                if current_time - last_w_press_time >= delay:
+                    PITCH -=20
+                    self.vehicle.channels.overrides[2] = min(PITCH,1000,max(PITCH,2000))
+                    last_w_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[2] = 1500
+            
+            if keyboard.is_pressed('s'):
+                current_time = time.time()
+                if current_time - last_s_press_time >= delay:
+                    PITCH +=20
+                    self.vehicle.channels.overrides[2] = min(PITCH,1000,max(PITCH,2000))
+                    last_s_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[2] = 1500
+
+            if keyboard.is_pressed('a'):
+                current_time = time.time()
+                if current_time - last_a_press_time >= delay:
+                    ROLL -=20
+                    self.vehicle.channels.overrides[1] = min(ROLL,1000,max(ROLL,2000))
+                    last_a_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[1] = 1500
+                
+            if keyboard.is_pressed('d'):
+                current_time = time.time()
+                if current_time - last_d_press_time >= delay:
+                    ROLL +=20
+                    self.vehicle.channels.overrides[1] = min(ROLL,1000,max(ROLL,2000))
+                    last_d_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[1] = 1500
+
+            if keyboard.is_pressed('q'):
+                current_time = time.time()
+                if current_time - last_q_press_time >= delay:
+                    YAW -=20
+                    self.vehicle.channels.overrides[4] = min(YAW,1000,max(YAW,2000))
+                    last_q_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[4] = 1500
+
+            if keyboard.is_pressed('e'):
+                current_time = time.time()
+                if current_time - last_e_press_time >= delay:
+                    YAW +=20
+                    self.vehicle.channels.overrides[4] = min(YAW,1000,max(YAW,2000))
+                    last_e_press_time = current_time
+                else:
+                    self.vehicle.channels.overrides[4] = 1500
+
+            if keyboard.is_pressed('x'):
+                self.arm(mode='STABILIZE')
+            
+            if keyboard.is_pressed('z'):
+                self.disarm()
+
+            if keyboard.is_pressed('l'):
+                self.land()
+
+            # write an autotune code for the vehicle
+            if keyboard.is_pressed('m'):
+                self.vehicle.mode = VehicleMode('POSHOLD')
+                time.sleep(5)
+                self.vehicle.mode = VehicleMode('AUTOTUNE')
+                time.sleep(5)
+                self.vehicle.channels.overrides[2] = 1300
+                time.sleep(1)
+                self.vehicle.channels.overrides[2] = 1700
+                time.sleep(1)
+                self.vehicle.channels.overrides[2] = 1500
+                time.sleep(2)
+                self.vehicle.mode = VehicleMode('POSHOLD')
+                time.sleep(5)
+                self.vehicle.mode = VehicleMode('AUTOTUNE')
+                time.sleep(5)
+                self.vehicle.channels.overrides[1] = 1300
+                time.sleep(1)
+                self.vehicle.channels.overrides[1] = 1700
+                time.sleep(1)
+                self.vehicle.channels.overrides[1] = 1500
+                time.sleep(2)
+                self.vehicle.mode = VehicleMode('POSHOLD')
+                time.sleep(5)
+                self.vehicle.mode = VehicleMode('AUTOTUNE')
+                time.sleep(5)
+                self.vehicle.channels.overrides[4] = 1300
+                time.sleep(1)
+                self.vehicle.channels.overrides[4] = 1700
+                time.sleep(1)
+                self.vehicle.channels.overrides[4] = 1500
+                time.sleep(2)
+                self.vehicle.mode = VehicleMode('POSHOLD')
+                time.sleep(5)
+
 
 import tkinter as tk
 
