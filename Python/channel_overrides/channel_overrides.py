@@ -44,7 +44,7 @@ while True:
     if keyboard.is_pressed('w'):
         current_time = time.time()
         if current_time - last_w_press_time >= delay:
-            channel_values[2] += 100  # Increase throttle channel (Ch3) by 100
+            channel_values[2] += 20  # Increase throttle channel (Ch3) by 20
             if channel_values[2] > 1900:
                 channel_values[2] = 1900
                 print("Throttle: Value Limit +")
@@ -53,10 +53,10 @@ while True:
             last_w_press_time = current_time
             print("Throttle value: %s" % channel_values[2])
 
-    elif keyboard.is_pressed('s'):
+    if keyboard.is_pressed('s'):
         current_time = time.time()
         if current_time - last_s_press_time >= delay:
-            channel_values[2] -= 100  # Decrease throttle channel (Ch3) by 100
+            channel_values[2] -= 20  # Decrease throttle channel (Ch3) by 20
             if channel_values[2] < 1000:
                 channel_values[2] = 1000
                 print("Throttle: Value Limit -")
@@ -65,10 +65,10 @@ while True:
             last_s_press_time = current_time
             print("Throttle value: %s" % channel_values[2])
 
-    elif keyboard.is_pressed('a'):
+    if keyboard.is_pressed('a'):
         current_time = time.time()
         if current_time - last_a_press_time >= delay:
-            channel_values[0] += 100  # Increase roll channel (Ch1) by 100
+            channel_values[0] += 30  # Increase roll channel (Ch1) by 100
             if channel_values[0] > 1900:
                 channel_values[0] = 1900
                 print("Roll: Value Limit +")
@@ -77,10 +77,10 @@ while True:
             last_a_press_time = current_time
             print("Roll value: %s" % channel_values[0])
 
-    elif keyboard.is_pressed('d'):
+    if keyboard.is_pressed('d'):
         current_time = time.time()
         if current_time - last_d_press_time >= delay:
-            channel_values[0] -= 100  # Decrease roll channel (Ch1) by 100
+            channel_values[0] -= 30  # Decrease roll channel (Ch1) by 100
             if channel_values[0] < 1000:
                 channel_values[0] = 1000
                 print("Roll: Value Limit -")
@@ -89,10 +89,10 @@ while True:
             last_d_press_time = current_time
             print("Roll value: %s" % channel_values[0])
 
-    elif keyboard.is_pressed('q'):
+    if keyboard.is_pressed('q'):
         current_time = time.time()
         if current_time - last_q_press_time >= delay:
-            channel_values[3] += 100  # Increase yaw channel (Ch4) by 100
+            channel_values[3] += 30  # Increase yaw channel (Ch4) by 100
             if channel_values[3] > 1900:
                 channel_values[3] = 1900
                 print("Yaw: Value Limit +")
@@ -101,10 +101,10 @@ while True:
             last_q_press_time = current_time
             print("Yaw value: %s" % channel_values[3])
 
-    elif keyboard.is_pressed('e'):
+    if keyboard.is_pressed('e'):
         current_time = time.time()
         if current_time - last_e_press_time >= delay:
-            channel_values[3] -= 100  # Decrease yaw channel (Ch4) by 100
+            channel_values[3] -= 30  # Decrease yaw channel (Ch4) by 100
             if channel_values[3] < 1000:
                 channel_values[3] = 1000
                 print("Yaw: Value Limit -")
@@ -113,10 +113,10 @@ while True:
             last_e_press_time = current_time
             print("Yaw value: %s" % channel_values[3])
 
-    elif keyboard.is_pressed('z'):
+    if keyboard.is_pressed('z'):
         current_time = time.time()
         if current_time - last_z_press_time >= delay:
-            channel_values[1] += 100  # Increase pitch channel (Ch2) by 100
+            channel_values[1] += 30  # Increase pitch channel (Ch2) by 100
             if channel_values[1] > 1900:
                 channel_values[1] = 1900
                 print("Pitch: Value Limit +")
@@ -125,10 +125,10 @@ while True:
             last_z_press_time = current_time
             print("Pitch value: %s" % channel_values[1])
 
-    elif keyboard.is_pressed('x'):
+    if keyboard.is_pressed('x'):
         current_time = time.time()
         if current_time - last_x_press_time >= delay:
-            channel_values[1] -= 100  # Decrease pitch channel (Ch2) by 100
+            channel_values[1] -= 30  # Decrease pitch channel (Ch2) by 100
             if channel_values[1] < 1000:
                 channel_values[1] = 1000
                 print("Pitch: Value Limit -")
@@ -137,17 +137,21 @@ while True:
             last_x_press_time = current_time
             print("Pitch value: %s" % channel_values[1])
 
-    elif keyboard.is_pressed('r'):
+    if keyboard.is_pressed('r'):
         print("Vehicle Disarmed")
         channel_values[4] = 1000
         vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3], '5': channel_values[4]}
 
-    elif keyboard.is_pressed('l'):
+    if keyboard.is_pressed('l'):
         current_time = time.time()
         if current_time - last_l_press_time >= delay:
             channel_values[4] = 2000
-            print("Vehicle Armed")
+            print("Vehicle landing")
             vehicle.channels.overrides = {'1': channel_values[0], '2': channel_values[1], '3': channel_values[2], '4': channel_values[3], '5': channel_values[4]}
             last_a_press_time = current_time
+    
+    if keyboard.is_pressed('esc'):
+        print("Can not control")
+        break
 
 print("Completed")

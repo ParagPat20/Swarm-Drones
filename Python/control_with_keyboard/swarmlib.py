@@ -179,80 +179,80 @@ class Drone:
         last_u_press_time = 0
         last_j_press_time = 0
         delay = 0.2  # Adjust the delay time as needed (in seconds)
-        self.vehicle.channels.overrides[1] = 1500  # ROLL channel
-        self.vehicle.channels.overrides[2] = 1500  # PITCH channel
-        self.vehicle.channels.overrides[3] = 1000  # THROTTLE channel
-        self.vehicle.channels.overrides[4] = 1500  # YAW channel
-
+        self.vehicle.channels.overrides['1'] = 1500  # ROLL channel
+        self.vehicle.channels.overrides['2'] = 1500  # PITCH channel
+        self.vehicle.channels.overrides['3'] = 1000  # THROTTLE channel
+        self.vehicle.channels.overrides['4'] = 1500  # YAW channel
+        print("U & J for THROTTLE \n W & S for PITCH \n A & D for ROLL \n Q & E for YAW \n X for ARM in STABILIZE \n Z for Disarm \n L for Land \n M for Autotune")
         while True:
             # Initialize Channels
             if keyboard.is_pressed('u'):
                 current_time = time.time()
                 if current_time - last_u_press_time >= delay:
                     THROTTLE +=20
-                    self.vehicle.channels.overrides[3] = min(THROTTLE,1000,max(THROTTLE,2000))
+                    self.vehicle.channels.overrides['3'] = min(THROTTLE,1000,max(THROTTLE,2000))
                     last_u_press_time = current_time
             
             if keyboard.is_pressed('j'):
                 current_time = time.time()
                 if current_time - last_j_press_time >= delay:
                     THROTTLE -=20
-                    self.vehicle.channels.overrides[3] = min(THROTTLE,1000,max(THROTTLE,2000))
+                    self.vehicle.channels.overrides['3'] = min(THROTTLE,1000,max(THROTTLE,2000))
                     last_j_press_time = current_time
 
             if keyboard.is_pressed('w'):
                 current_time = time.time()
                 if current_time - last_w_press_time >= delay:
                     PITCH -=20
-                    self.vehicle.channels.overrides[2] = min(PITCH,1000,max(PITCH,2000))
+                    self.vehicle.channels.overrides['2'] = min(PITCH,1000,max(PITCH,2000))
                     last_w_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[2] = 1500
+            else:
+                self.vehicle.channels.overrides['2'] = 1500
             
             if keyboard.is_pressed('s'):
                 current_time = time.time()
                 if current_time - last_s_press_time >= delay:
                     PITCH +=20
-                    self.vehicle.channels.overrides[2] = min(PITCH,1000,max(PITCH,2000))
+                    self.vehicle.channels.overrides['2'] = min(PITCH,1000,max(PITCH,2000))
                     last_s_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[2] = 1500
+            else:
+                self.vehicle.channels.overrides['2'] = 1500
 
             if keyboard.is_pressed('a'):
                 current_time = time.time()
                 if current_time - last_a_press_time >= delay:
                     ROLL -=20
-                    self.vehicle.channels.overrides[1] = min(ROLL,1000,max(ROLL,2000))
+                    self.vehicle.channels.overrides['1'] = min(ROLL,1000,max(ROLL,2000))
                     last_a_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[1] = 1500
+            else:
+                self.vehicle.channels.overrides['1'] = 1500
                 
             if keyboard.is_pressed('d'):
                 current_time = time.time()
                 if current_time - last_d_press_time >= delay:
                     ROLL +=20
-                    self.vehicle.channels.overrides[1] = min(ROLL,1000,max(ROLL,2000))
+                    self.vehicle.channels.overrides['1'] = min(ROLL,1000,max(ROLL,2000))
                     last_d_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[1] = 1500
+            else:
+                self.vehicle.channels.overrides['1'] = 1500
 
             if keyboard.is_pressed('q'):
                 current_time = time.time()
                 if current_time - last_q_press_time >= delay:
                     YAW -=20
-                    self.vehicle.channels.overrides[4] = min(YAW,1000,max(YAW,2000))
+                    self.vehicle.channels.overrides['4'] = min(YAW,1000,max(YAW,2000))
                     last_q_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[4] = 1500
+            else:
+                self.vehicle.channels.overrides['4'] = 1500
 
             if keyboard.is_pressed('e'):
                 current_time = time.time()
                 if current_time - last_e_press_time >= delay:
                     YAW +=20
-                    self.vehicle.channels.overrides[4] = min(YAW,1000,max(YAW,2000))
+                    self.vehicle.channels.overrides['4'] = min(YAW,1000,max(YAW,2000))
                     last_e_press_time = current_time
-                else:
-                    self.vehicle.channels.overrides[4] = 1500
+            else:
+                self.vehicle.channels.overrides['4'] = 1500
 
             if keyboard.is_pressed('x'):
                 self.arm(mode='STABILIZE')
@@ -270,31 +270,31 @@ class Drone:
                 time.sleep(5)
                 self.vehicle.mode = VehicleMode('AUTOTUNE')
                 time.sleep(5)
-                self.vehicle.channels.overrides[2] = 1300
+                self.vehicle.channels.overrides['2'] = 1300
                 time.sleep(1)
-                self.vehicle.channels.overrides[2] = 1700
+                self.vehicle.channels.overrides['2'] = 1700
                 time.sleep(1)
-                self.vehicle.channels.overrides[2] = 1500
+                self.vehicle.channels.overrides['2'] = 1500
                 time.sleep(2)
                 self.vehicle.mode = VehicleMode('POSHOLD')
                 time.sleep(5)
                 self.vehicle.mode = VehicleMode('AUTOTUNE')
                 time.sleep(5)
-                self.vehicle.channels.overrides[1] = 1300
+                self.vehicle.channels.overrides['1'] = 1300
                 time.sleep(1)
-                self.vehicle.channels.overrides[1] = 1700
+                self.vehicle.channels.overrides['1'] = 1700
                 time.sleep(1)
-                self.vehicle.channels.overrides[1] = 1500
+                self.vehicle.channels.overrides['1'] = 1500
                 time.sleep(2)
                 self.vehicle.mode = VehicleMode('POSHOLD')
                 time.sleep(5)
                 self.vehicle.mode = VehicleMode('AUTOTUNE')
                 time.sleep(5)
-                self.vehicle.channels.overrides[4] = 1300
+                self.vehicle.channels.overrides['4'] = 1300
                 time.sleep(1)
-                self.vehicle.channels.overrides[4] = 1700
+                self.vehicle.channels.overrides['4'] = 1700
                 time.sleep(1)
-                self.vehicle.channels.overrides[4] = 1500
+                self.vehicle.channels.overrides['4'] = 1500
                 time.sleep(2)
                 self.vehicle.mode = VehicleMode('POSHOLD')
                 time.sleep(5)
@@ -302,7 +302,6 @@ class Drone:
 
 import tkinter as tk
 
-import tkinter as tk
 
 class DroneGUI:
     def __init__(self, vehicle):
@@ -353,6 +352,18 @@ class DroneGUI:
         self.roll_label.pack()
         self.pitch_label = tk.Label(self.root, text="Pitch: ")
         self.pitch_label.pack()
+
+        # Labels for Showing the keybindings
+        self.show_keybindings_label = tk.Label(self.root, text="Keybindings \n \n")
+        self.show_keybindings_label.pack()
+        self.show_Control_Guided_label = tk.Label(self.root, text="Control with Guided mode keys \n \n")
+        self.show_Control_Guided_label.pack()
+        self.show_keygs_label = tk.Label(self.root, text = "U & J for Up & Down \n W & S for Forward and Backward \n A & D for Left and Right \n M for ARM \n Q for Disarm \n L for Land \n N for Takeoff \n P for Channel Control")
+        self.show_keygs_label.pack()
+        self.show_Control_Stabilize_label = tk.Label(self.root, text="Control with Stabilize mode keys \n \n")
+        self.show_Control_Stabilize_label.pack()
+        self.show_keys_label = tk.Label(self.root, text = "U & J for THROTTLE \n W & S for PITCH \n A & D for ROLL \n Q & E for YAW \n X for ARM in STABILIZE \n Z for Disarm \n L for Land \n M for Autotune")
+        self.show_keys_label.pack()
 
     def update_gui(self):
         try:
