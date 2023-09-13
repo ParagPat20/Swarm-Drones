@@ -34,7 +34,7 @@ class Drone:
                 if current_altitude >= aTargetAltitude * 0.9:
                     print("Reached target altitude")
                     break
-                if keyboard.is_pressed('b'):
+                if keyboard.is_pressed('q'):
                     self.vehicle.mode = VehicleMode('LAND')
                     break
             else:
@@ -86,6 +86,13 @@ class Drone:
         print("Use arrow keys to control the drone. Press 'Esc' to exit.")
 
         while True:
+
+            if keyboard.is_pressed('m'):
+                self.arm()
+
+            if keyboard.is_pressed('n'):
+                self.takeoff(1)
+
             # Check for key presses to control the drone
             if keyboard.is_pressed('w'):
                 vel_x = MAX_VELOCITY  # Move forward
@@ -116,12 +123,6 @@ class Drone:
 
             # Send NED velocity commands
             self.send_ned_velocity(vel_x, vel_y, vel_z, 0.5)
-
-            if keyboard.is_pressed('m'):
-                self.arm()
-
-            if keyboard.is_pressed('n'):
-                self.takeoff(1)
 
             if keyboard.is_pressed('l'):
                 self.land()
