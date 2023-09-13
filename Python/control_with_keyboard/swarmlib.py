@@ -31,7 +31,7 @@ class Drone:
             current_altitude = self.vehicle.location.global_relative_frame.alt
             if current_altitude is not None:
                 print(" Altitude: ", current_altitude)
-                if current_altitude >= aTargetAltitude * 0.8:
+                if current_altitude >= aTargetAltitude * 0.9:
                     print("Reached target altitude")
                     break
                 if keyboard.is_pressed('b'):
