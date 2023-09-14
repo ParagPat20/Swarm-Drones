@@ -23,6 +23,9 @@ class Drone:
         for x in range(0,duration):
             self.vehicle.send_mavlink(msg)
             time.sleep(1)
+            if keyboard.is_pressed('l'):
+                self.land()
+                break
 
     def takeoff(self, aTargetAltitude):
         print("Taking off!")
@@ -81,7 +84,7 @@ class Drone:
         vel_z = 0
 
         # Define the maximum velocity (m/s)
-        MAX_VELOCITY = 0.5
+        MAX_VELOCITY = 0.7
 
         print("Use arrow keys to control the drone. Press 'Esc' to exit.")
 
@@ -122,7 +125,7 @@ class Drone:
                 vel_z = 0
 
             # Send NED velocity commands
-            self.send_ned_velocity(vel_x, vel_y, vel_z, 0.5)
+            self.send_ned_velocity(vel_x, vel_y, vel_z, 1)
 
             if keyboard.is_pressed('l'):
                 self.land()
@@ -136,6 +139,24 @@ class Drone:
             if keyboard.is_pressed('g'):
                 self.vehicle.mode = VehicleMode('GUIDED')
 
+            if keyboard.is_pressed('k'):
+                self.vehicle.mode = VehicleMode('GUIDED')
+                time.sleep(1)
+                self.arm()
+                time.sleep(2)
+                self.takeoff(2)
+                self.send_ned_velocity(0,0,0,1)
+                time.sleep(1)
+
+                print("Forward")
+                self.send_ned_velocity(0.7,0,0,8)
+                print("Right")
+                self.send_ned_velocity(0,0.7,0,8)
+                print("Backward")
+                self.send_ned_velocity(-0.7,0,0,8)
+                print("Left")
+                self.send_ned_velocity(0,-0.7,0,8)
+                self.land()
             # Exit the loop if the 'Esc' key is pressed
             if keyboard.is_pressed('esc'):
                 self.send_ned_velocity(0, 0, 0, 1)  # Stop the drone before exiting
