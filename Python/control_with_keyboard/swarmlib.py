@@ -13,7 +13,7 @@ class Drone:
         msg = self.vehicle.message_factory.set_position_target_local_ned_encode(
             0,       # time_boot_ms (not used)
             0, 0,    # target system, target component
-            mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, # frame
             0b0000111111000111, # type_mask (only speeds enabled)
             0, 0, 0, # x, y, z positions (not used)
             velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
@@ -84,7 +84,7 @@ class Drone:
         vel_z = 0
 
         # Define the maximum velocity (m/s)
-        MAX_VELOCITY = 0.7
+        MAX_VELOCITY = 0.5
 
         print("Use arrow keys to control the drone. Press 'Esc' to exit.")
 
@@ -205,16 +205,6 @@ class DroneGUI:
         self.battery_voltage_label = tk.Label(self.root, text="Battery Voltage: ")
         self.battery_voltage_label.pack()
 
-        # Labels for throttle, yaw, roll, and pitch
-        self.throttle_label = tk.Label(self.root, text="Throttle: ")
-        self.throttle_label.pack()
-        self.yaw_label = tk.Label(self.root, text="Yaw: ")
-        self.yaw_label.pack()
-        self.roll_label = tk.Label(self.root, text="Roll: ")
-        self.roll_label.pack()
-        self.pitch_label = tk.Label(self.root, text="Pitch: ")
-        self.pitch_label.pack()
-
         # Labels for Showing the keybindings
         self.show_keybindings_label = tk.Label(self.root, text="Keybindings \n \n")
         self.show_keybindings_label.pack()
@@ -233,10 +223,6 @@ class DroneGUI:
             groundspeed = self.vehicle.groundspeed
             gps_status = self.vehicle.gps_0.fix_type
             battery_voltage = self.vehicle.battery.voltage
-            throttle = self.vehicle.channels['3']  # Assuming throttle is on channel 3
-            yaw = self.vehicle.channels['4']  # Assuming yaw is on channel 4
-            roll = self.vehicle.channels['1']  # Assuming roll is on channel 1
-            pitch = self.vehicle.channels['2']  # Assuming pitch is on channel 2
 
             # Update GUI labels with vehicle data
             self.connection_label.config(text="Connected")
@@ -251,10 +237,6 @@ class DroneGUI:
             self.groundspeed_label.config(text=f"Groundspeed: {groundspeed:.2f} m/s")
             self.gps_status_label.config(text=f"GPS Status: {gps_status}")
             self.battery_voltage_label.config(text=f"Battery Voltage: {battery_voltage:.2f} V")
-            self.throttle_label.config(text=f"Throttle: {throttle}")
-            self.yaw_label.config(text=f"Yaw: {yaw}")
-            self.roll_label.config(text=f"Roll: {roll}")
-            self.pitch_label.config(text=f"Pitch: {pitch}")
 
         except Exception as e:
             # Handle the exception when the vehicle is disconnected
@@ -270,10 +252,6 @@ class DroneGUI:
             self.groundspeed_label.config(text="Groundspeed: N/A")
             self.gps_status_label.config(text="GPS Status: N/A")
             self.battery_voltage_label.config(text="Battery Voltage: N/A")
-            self.throttle_label.config(text="Throttle: N/A")
-            self.yaw_label.config(text="Yaw: N/A")
-            self.roll_label.config(text="Roll: N/A")
-            self.pitch_label.config(text="Pitch: N/A")
 
         # Schedule the update every 1000 milliseconds (1 second)
         self.root.after(1000, self.update_gui)
