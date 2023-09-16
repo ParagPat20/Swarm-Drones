@@ -37,8 +37,8 @@ class Drone:
                 if current_altitude >= aTargetAltitude * 0.9:
                     print("Reached target altitude")
                     break
-                if keyboard.is_pressed('q'):
-                    self.vehicle.mode = VehicleMode('LAND')
+                if keyboard.is_pressed('l'):
+                    self.land()
                     break
             else:
                 print("Waiting for altitude information...")
