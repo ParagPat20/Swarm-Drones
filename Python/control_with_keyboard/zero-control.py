@@ -8,6 +8,7 @@ from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 import time
 import socket
+import threading
 
 class Drone:
     def __init__(self, connection_string):
@@ -27,7 +28,7 @@ class Drone:
         # send command to vehicle on 1 Hz cycle
         for x in range(0,duration):
             self.vehicle.send_mavlink(msg)
-            time.sleep(0.1)
+            time.sleep(1)
 
     def takeoff(self, aTargetAltitude):
         print("Taking off!")
@@ -41,7 +42,7 @@ class Drone:
                     break
             else:
                 print("Waiting for altitude information...")
-            time.sleep(0.1)
+            time.sleep(1)
 
     def arm(self,mode='GUIDED'):
         print("Arming motors")
@@ -51,7 +52,7 @@ class Drone:
         while not self.vehicle.armed:
             print("Waiting for arming...")
             self.vehicle.armed = True
-            time.sleep(0.1)
+            time.sleep(1)
 
         print("Vehicle Armed")
 
@@ -62,7 +63,7 @@ class Drone:
         while self.vehicle.armed:
             print("Waiting for disarming...")
             self.vehicle.armed = False
-            time.sleep(0.1)
+            time.sleep(1)
 
         print("Vehicle Disarmed")
 
@@ -85,6 +86,16 @@ class Drone:
         P['VelocityY'] = self.vehicle.velocity[1]  # Velocity in Y direction (East)
         P['VelocityZ'] = self.vehicle.velocity[2]  # Velocity in Z direction (Down)
 
+    def Control(self):
+
+        if C['Takeoff'] == 1:
+            self.arm(mode='GUIDED')
+            self.takeoff(1)
+            print("Here")
+
+        self.send_ned_velocity(C['vx'], C['vy'], C['vz'], 1)
+        self.DroneState()
+
 def Client_Start(server_ip, server_port):
     # Create a socket object and connect to the server
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -104,26 +115,14 @@ def Client_Start(server_ip, server_port):
         C = eval(c_str)  # Convert the received string back to a dictionary
         print(C)
         # Process the received data as needed
-        Control(my_drone, C)
 
         time.sleep(0.1)  # Adjust the sleep interval as needed
 
 
-def Control(drone, control_params):
-
-    if control_params['Mode'] == 'GUIDED':
-        drone.arm(mode='GUIDED')
-
-    if control_params['Mode'] == 'LAND':
-        drone.land()
-
-    if control_params['Takeoff'] == 1:
-        drone.arm(mode='GUIDED')
-        drone.takeoff(1)
-        print("Here")
-
-    drone.send_ned_velocity(control_params['vx'], control_params['vy'], control_params['vz'], 1)
-    drone.DroneState()
-
 # Start the client
+
+# write threading code
+D1 = Drone('tcp:127.0.0.1')
+control_thread = threading.Thread(target=D1.Control)
+control_thread.start()
 Client_Start('192.168.1.9', 12345)
