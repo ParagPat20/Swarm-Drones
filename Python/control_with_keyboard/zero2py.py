@@ -93,7 +93,7 @@ def Client_Start(server_ip, server_port):
     print("Connected to the server")
 
     # Create a Drone instance
-    my_drone = Drone('tcp:127.0.0.1:5762')
+    my_drone = Drone('tcp:127.0.0.1:5772')
 
     while True:
         # Send P dictionary values to the server
@@ -126,4 +126,4 @@ def Control(drone, control_params):
     drone.DroneState()
 
 # Start the client
-Client_Start('192.168.1.9', 12345)
+Client_Start('192.168.1.9', 12346)
