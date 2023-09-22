@@ -20,9 +20,14 @@ C = {
 # Create a global variable to keep track of the GUI window
 root = tk.Tk()
 root.title("Drone Controller")
-
+root.configure(bg="#DAEFFD")
 style = ThemedStyle(root)
-style.set_theme("adapta")
+style.set_theme("itft1")
+
+control_var = tk.IntVar()
+
+def set_control(drone_id):
+    control_var.set(drone_id)
 
 # Create frames to hold labels
 frame_labels = [[ttk.Frame(root, relief="solid", padding=10) for _ in range(3)] for _ in range(2)]
@@ -102,6 +107,36 @@ max_battery_level = 12.8
 def map_battery_level(battery_level):
     return (battery_level / max_battery_level) * 100
 
+# Create buttons for control selection at the bottom
+control_button1 = ttk.Button(root, text="Drone 1", command=lambda: set_control(0))
+control_button2 = ttk.Button(root, text="Drone 2", command=lambda: set_control(1))
+control_button3 = ttk.Button(root, text="Both", command=lambda: set_control(-1))
+
+
+control_button1.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+control_button2.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+control_button3.grid(row=2, column=2, padx=10, pady=10, sticky="w")
+
+# Create a label to display the currently controlled drone
+controlled_drone_label = ttk.Label(root, text="Controlled Drone: None")
+controlled_drone_label.config(font=("Helvetica", 14))
+controlled_drone_label.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="w")
+
+def update_controlled_drone_label():
+    drone_id = control_var.get()
+    if drone_id == -1:
+        controlled_drone_label.config(text="Controlled Drone: Both")
+    elif drone_id == 0:
+        controlled_drone_label.config(text="Controlled Drone: Drone 1")
+    elif drone_id == 1:
+        controlled_drone_label.config(text="Controlled Drone: Drone 2")
+    else:
+        controlled_drone_label.config(text="Controlled Drone: None")
+    root.after(100, update_controlled_drone_label)
+
+update_controlled_drone_label()
+
+
 def update_gui(drone_id):
     # Update the values of P dictionary labels
     for key, value in P[drone_id].items():
@@ -130,18 +165,33 @@ def handle_client(drone_id, client_socket):
     global P, C
     while True:
         try:
-            # Receive P dictionary values from the client
+            # Receive P dictionary values for the current drone
             p_str = client_socket.recv(1024).decode()
             P[drone_id] = eval(p_str)  # Convert the received string back to a dictionary
 
-            # Process the received data as needed
-            # Example: Print P dictionary
-            update_gui(drone_id)
-            
-            # Send C dictionary values to the client
+            # Receive P dictionary values for the other drone(s)
+            if drone_id == -1:  # Control both drones
+                for other_drone_id in range(2):
+                    if other_drone_id != drone_id:
+                        p_str = client_socket.recv(1024).decode()
+                        P[other_drone_id] = eval(p_str)
+            else:
+                other_drone_id = 1 if drone_id == 0 else 0  # Toggle between drones
+                p_str = client_socket.recv(1024).decode()
+                P[other_drone_id] = eval(p_str)
+
+            # Process the received data as needed for the selected drone(s)
+            if drone_id == -1:  # Control both drones
+                for i in range(2):
+                    update_gui(i)
+            else:
+                update_gui(drone_id)
+
+            # Send C dictionary values for the selected drone(s)
             c_str = str(C[drone_id])
             client_socket.send(c_str.encode())
             controller(drone_id)
+
         except KeyboardInterrupt:
             print(f"Server for drone {drone_id} stopped.")
             break
@@ -151,6 +201,8 @@ def handle_client(drone_id, client_socket):
         if keyboard.is_pressed('esc'):
             print(f"Client for drone {drone_id} closed.")
             break
+
+
 
 def controller(drone_id):
     MAX_VELOCITY = 1
@@ -232,6 +284,10 @@ def PC_SERVER_start(drone_id):
             server_socket.close()
             print(f"Connection to drone {drone_id} closed.")
             break
+
+        # Toggle to the next drone ID (0 or 1)
+        drone_id = 1 if drone_id == 0 else 0
+
 
 if __name__ == "__main__":
     for drone_id in range(2):
