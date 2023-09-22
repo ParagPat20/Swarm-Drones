@@ -13,7 +13,7 @@ class Drone:
         msg = self.vehicle.message_factory.set_position_target_local_ned_encode(
             0,       # time_boot_ms (not used)
             0, 0,    # target system, target component
-            mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, # frame
+            mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
             0b0000111111000111, # type_mask (only speeds enabled)
             0, 0, 0, # x, y, z positions (not used)
             velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
@@ -133,6 +133,9 @@ class Drone:
             if keyboard.is_pressed('q'):
                 self.disarm()
 
+            if keyboard.is_pressed('r'):
+                self.vehicle.mode = VehicleMode('RTL')
+
             if keyboard.is_pressed('p'):
                 self.vehicle.mode = VehicleMode('POSHOLD')
             
@@ -144,18 +147,18 @@ class Drone:
                 time.sleep(1)
                 self.arm()
                 time.sleep(2)
-                self.takeoff(2)
+                self.takeoff(3)
                 self.send_ned_velocity(0,0,0,1)
                 time.sleep(1)
 
                 print("Forward")
-                self.send_ned_velocity(0.7,0,0,8)
+                self.send_ned_velocity(0.7,0,0,4)
                 print("Right")
-                self.send_ned_velocity(0,0.7,0,8)
+                self.send_ned_velocity(0,0.7,0,4)
                 print("Backward")
-                self.send_ned_velocity(-0.7,0,0,8)
+                self.send_ned_velocity(-0.7,0,0,4)
                 print("Left")
-                self.send_ned_velocity(0,-0.7,0,8)
+                self.send_ned_velocity(0,-0.7,0,4)
                 self.land()
             # Exit the loop if the 'Esc' key is pressed
             if keyboard.is_pressed('esc'):

@@ -200,6 +200,9 @@ def controller(drone_id):
         C[drone_id]['Mode'] = 'GUIDED'
     if keyboard.is_pressed('p'):
         C[drone_id]['Mode'] = 'STABILIZE'
+
+    if keyboard.is_pressed('h'):
+        C[drone_id]['Mode'] = 'AUTOTUNE'
     
     if keyboard.is_pressed('r'):
         C[drone_id]['Mode'] = 'RTL'
