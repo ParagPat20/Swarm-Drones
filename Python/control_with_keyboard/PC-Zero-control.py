@@ -15,7 +15,7 @@ P = {
 C = {
     0: {'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0},
     1: {'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0},
-    'drone':None
+    'drone': None
 }
 
 # Create a global variable to keep track of the GUI window
@@ -191,7 +191,9 @@ def handle_client(drone_id, client_socket):
 
             # Send C dictionary values for the selected drone(s)
             c_str = str(C[drone_id])
+            c_drone = str(C['drone'])
             client_socket.send(c_str.encode())
+            client_socket.send(c_drone.encode())
             controller(drone_id)
 
         except KeyboardInterrupt:
