@@ -167,6 +167,8 @@ class Drone:
                 break
 
 import tkinter as tk
+from tkinter import ttk
+from ttkthemes import ThemedStyle
 
 class DroneGUI:
     def __init__(self, vehicle):
@@ -175,6 +177,9 @@ class DroneGUI:
         # Create the main GUI window
         self.root = tk.Tk()
         self.root.title("Drone Status")
+        self.root.configure(bg="#DAEFFD")
+        self.style = ThemedStyle(self.root)
+        self.style.set_theme("itft1")
 
         # Labels to display connection status and connection string
         self.connection_label = tk.Label(self.root, text="Connected")
