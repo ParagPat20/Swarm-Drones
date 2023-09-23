@@ -14,7 +14,8 @@ P = {
 
 C = {
     0: {'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0},
-    1: {'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0}
+    1: {'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0},
+    'drone':None
 }
 
 # Create a global variable to keep track of the GUI window
@@ -28,6 +29,7 @@ control_var = tk.IntVar()
 
 def set_control(drone_id):
     control_var.set(drone_id)
+    C['drone'] = drone_id
 
 # Create frames to hold labels
 frame_labels = [[ttk.Frame(root, relief="solid", padding=10) for _ in range(3)] for _ in range(2)]
