@@ -191,9 +191,7 @@ def handle_client(drone_id, client_socket):
 
             # Send C dictionary values for the selected drone(s)
             c_str = str(C[drone_id])
-            c_drone = str(C['drone'])
             client_socket.send(c_str.encode())
-            client_socket.send(c_drone.encode())
             controller(drone_id)
 
         except KeyboardInterrupt:
