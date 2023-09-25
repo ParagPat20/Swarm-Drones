@@ -190,7 +190,7 @@ def handle_client(drone_id, client_socket):
                 update_gui(drone_id)
 
             # Send C dictionary values for the selected drone(s)
-            c_str = str(C[drone_id])
+            c_str = str(C)
             client_socket.send(c_str.encode())
             controller(drone_id)
 
