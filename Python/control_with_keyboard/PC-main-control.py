@@ -89,5 +89,6 @@ def PC_SERVER_start():
         c_str = str(C)
         client_socket.send(c_str.encode())
         controller()
+        print(C)
 
 PC_SERVER_start()
