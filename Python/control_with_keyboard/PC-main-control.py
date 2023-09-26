@@ -66,6 +66,8 @@ def controller():
         C['Drone'] = 1
     if keyboard.is_pressed('b'):
         C['Drone'] = 2
+    if keyboard.is_pressed('f'):
+        C['Drone'] = 3
     if keyboard.is_pressed('h'):
         C['mstart'] = True
 
