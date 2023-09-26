@@ -1,7 +1,7 @@
 import keyboard
 import socket
 import threading
-
+import time
 
 
 C = {'Drone':0, 'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0, 'mstart': False}
@@ -90,5 +90,6 @@ def PC_SERVER_start():
         client_socket.send(c_str.encode())
         controller()
         print(C)
+        time.sleep(0.5)
 
 PC_SERVER_start()
