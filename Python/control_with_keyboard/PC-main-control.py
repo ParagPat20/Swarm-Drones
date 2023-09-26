@@ -86,15 +86,8 @@ def PC_SERVER_start():
     while True:
         client_socket, client_address = server_socket.accept()
         print(f"Connected to drone : {client_address}")
-
-        # Start a new thread to handle client communication
-        client_thread = threading.Thread(target=handle_client, args=(client_socket,))
-        client_thread.start()
-
-def handle_client(client_socket):
-    global P, C
-    while True:
         c_str = str(C)
         client_socket.send(c_str.encode())
+        controller()
 
 PC_SERVER_start()
