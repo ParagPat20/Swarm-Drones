@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import keyboard
 from ttkthemes import ThemedStyle
+import time
 
 # Create a dictionary to store the drone control values
 C = {'Drone': 0,'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0}
@@ -85,6 +86,7 @@ def handle_client(drone_id, client_socket):
             c_str = str(C)
             client_socket.send(c_str.encode())
             controller(drone_id)
+            time.sleep(0.5)
         except KeyboardInterrupt:
             print(f"Server for drone {drone_id} stopped.")
             break
@@ -168,9 +170,8 @@ def PC_SERVER_start(drone_id):
         client_socket, client_address = server_socket.accept()
         print(f"Connected to drone {drone_id}: {client_address}")
 
-        # Start a new thread to handle client communication
-        client_thread = threading.Thread(target=handle_client, args=(drone_id, client_socket))
-        client_thread.start()
+        handle_client(drone_id,client_socket)
+        time.sleep(0.5)
         if keyboard.is_pressed('esc'):
             server_socket.close()
             print(f"Connection to drone {drone_id} closed.")
