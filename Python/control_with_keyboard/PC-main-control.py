@@ -88,7 +88,7 @@ def PC_SERVER_start():
         print(f"Connected to drone : {client_address}")
 
         # Start a new thread to handle client communication
-        client_thread = threading.Thread(target=handle_client, args=(client_socket))
+        client_thread = threading.Thread(target=handle_client, args=(client_socket,))
         client_thread.start()
 
 def handle_client(client_socket):
