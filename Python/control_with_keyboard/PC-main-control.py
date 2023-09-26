@@ -38,17 +38,17 @@ def controller():
     else:
         C['vz'] = 0
 
-    if keyboard.is_pressed('m') and P['ARM'] == 0:
+    if keyboard.is_pressed('m'):
         C['Arming'] = 1
     else:
         C['Arming'] = 0
 
-    if keyboard.is_pressed('n') and P['ARM'] == 1 and P['Altitude'] < 1:
+    if keyboard.is_pressed('n'):
         C['Takeoff'] = 1
     else:
         C['Takeoff'] = 0
 
-    if keyboard.is_pressed('q') and P['ARM'] == 1:
+    if keyboard.is_pressed('q'):
         C['Arming'] = 0
 
     if keyboard.is_pressed('l'):
