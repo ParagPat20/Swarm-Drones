@@ -41,8 +41,8 @@ for i, (key, value) in enumerate(C.items()):
     c_labels[key] = c_value
 
 # Create buttons for control selection at the bottom
-control_button1 = ttk.Button(root, text="Drone 1", command=lambda: set_control(0))
-control_button2 = ttk.Button(root, text="Drone 2", command=lambda: set_control(1))
+control_button1 = ttk.Button(root, text="Drone 1", command=lambda: set_control(1))
+control_button2 = ttk.Button(root, text="Drone 2", command=lambda: set_control(2))
 control_button3 = ttk.Button(root, text="Both", command=lambda: set_control(-1))
 
 control_button1.grid(row=2, column=0, padx=10, pady=10, sticky="w")
