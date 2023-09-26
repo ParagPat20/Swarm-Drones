@@ -83,9 +83,9 @@ def PC_SERVER_start():
     # Listen for incoming connections
     server_socket.listen()
     print(f"Server for drone is listening for connections...")
+    client_socket, client_address = server_socket.accept()
+    print(f"Connected to drone : {client_address}")
     while True:
-        client_socket, client_address = server_socket.accept()
-        print(f"Connected to drone : {client_address}")
         c_str = str(C)
         client_socket.send(c_str.encode())
         controller()
