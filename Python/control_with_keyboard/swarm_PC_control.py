@@ -5,6 +5,7 @@ from tkinter import ttk
 import keyboard
 from ttkthemes import ThemedStyle
 import time
+import json
 
 # Create a dictionary to store the drone control values
 C = {'Drone': 0,'vx': 0, 'vy': 0, 'vz': 0, 'Arming': 0, 'Mode': 'GUIDED', 'Takeoff': 0}
@@ -59,9 +60,9 @@ def update_controlled_drone_label():
     drone_id = control_var.get()
     if drone_id == -1:
         controlled_drone_label.config(text="Controlled Drone: Both")
-    elif drone_id == 0:
-        controlled_drone_label.config(text="Controlled Drone: Drone 1")
     elif drone_id == 1:
+        controlled_drone_label.config(text="Controlled Drone: Drone 1")
+    elif drone_id == 2:
         controlled_drone_label.config(text="Controlled Drone: Drone 2")
     else:
         controlled_drone_label.config(text="Controlled Drone: None")
@@ -83,8 +84,8 @@ def handle_client(drone_id, client_socket):
     while True:
         try:
             # Send C dictionary values for the selected drone(s)
-            c_str = str(C)
-            client_socket.send(c_str.encode())
+            c_str = json.dumps(C).encode()
+            client_socket.sendall(c_str)
             controller(drone_id)
             time.sleep(0.5)
         except KeyboardInterrupt:
