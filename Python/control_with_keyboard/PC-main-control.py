@@ -97,6 +97,4 @@ def handle_client(client_socket):
         c_str = str(C)
         client_socket.send(c_str.encode())
 
-server_thread = threading.Thread(target=PC_SERVER_start, args=(0,))
-server_thread.daemon = True
-server_thread.start()
+PC_SERVER_start()
