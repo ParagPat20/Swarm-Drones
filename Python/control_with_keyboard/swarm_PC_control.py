@@ -85,6 +85,29 @@ for i, (key, value) in enumerate(C[1].items()):
     
     c_labels[1][key] = c_value
 
+# Create battery progress bars and labels for both drones
+battery_labels = [ttk.Label(frame_labels[0][1], text="D1 Battery Level:"), ttk.Label(frame_labels[1][1], text="D2 Battery Level:")]
+battery_labels[0].config(font=("Helvetica", 14))  # Big Font
+battery_labels[1].config(font=("Helvetica", 14))  # Big Font
+battery_labels[0].grid(row=0, column=0, sticky="w")
+battery_labels[1].grid(row=0, column=0, sticky="w")
+
+battery_bars = [ttk.Progressbar(frame_labels[0][1], length=100, mode="determinate", style="Custom.Horizontal.TProgressbar"),
+               ttk.Progressbar(frame_labels[1][1], length=100, mode="determinate", style="Custom.Horizontal.TProgressbar")]
+
+for i in range(2):
+    battery_bars[i].grid(row=0, column=1, sticky="w", padx=10)
+
+# Define custom styles for progress bar
+style.configure("Custom.Horizontal.TProgressbar", troughcolor="white")
+style.configure("Green.Horizontal.TProgressbar", troughcolor="white", background="green")
+style.configure("Red.Horizontal.TProgressbar", troughcolor="white", background="red")
+
+# Set the maximum battery level
+max_battery_level = 12.8
+
+def map_battery_level(battery_level):
+    return (battery_level / max_battery_level) * 100
 
 # Create buttons for control selection at the bottom
 control_button1 = ttk.Button(root, text="Drone 1", command=lambda: set_control(0))
@@ -125,24 +148,53 @@ def update_gui(drone_id):
     for key, value in C[drone_id].items():
         c_labels[drone_id][key].config(text=str(value))
 
+    # Update the battery bar
+    battery_level = P[drone_id]['Batt']
+    battery_percentage = map_battery_level(battery_level)
+    battery_bars[drone_id]["value"] = battery_percentage
+
+    if battery_level <= 10.8:
+        battery_bars[drone_id]["style"] = "Red.Horizontal.TProgressbar"
+    else:
+        battery_bars[drone_id]["style"] = "Green.Horizontal.TProgressbar"
+
     root.after(100, update_gui, drone_id)
 
 update_gui(0)
 update_gui(1)
 
-def handle_client(client_socket):
+def handle_client(drone_id, client_socket):
     global P, C
     while True:
         try:
             # Receive P dictionary values for the current drone
             p_str = client_socket.recv(1024).decode()
-            P = eval(p_str)  # Convert the received string back to a dictionary
-            set_control(drone_id)
+            P[drone_id] = eval(p_str)  # Convert the received string back to a dictionary
+
+            # Receive P dictionary values for the other drone(s)
+            if drone_id == -1:  # Control both drones
+                for other_drone_id in range(2):
+                    if other_drone_id != drone_id:
+                        p_str = client_socket.recv(1024).decode()
+                        P[other_drone_id] = eval(p_str)
+            else:
+                other_drone_id = 1 if drone_id == 0 else 0  # Toggle between drones
+                p_str = client_socket.recv(1024).decode()
+                P[other_drone_id] = eval(p_str)
+
+            # Process the received data as needed for the selected drone(s)
+            if drone_id == -1:  # Control both drones
+                for i in range(2):
+                    update_gui(i)
+            else:
+                update_gui(drone_id)
+
             # Send C dictionary values for the selected drone(s)
-            c_str = str(C)
+            c_str = str(C[drone_id])
+            c_drone = str(C['drone'])
             client_socket.send(c_str.encode())
+            client_socket.send(c_drone.encode())
             controller(drone_id)
-            print(drone_id)
 
         except KeyboardInterrupt:
             print(f"Server for drone {drone_id} stopped.")
@@ -230,13 +282,15 @@ def PC_SERVER_start(drone_id):
         print(f"Connected to drone {drone_id}: {client_address}")
 
         # Start a new thread to handle client communication
-        client_thread = threading.Thread(target=handle_client, args=(client_socket,))  # Wrap client_socket in a tuple
+        client_thread = threading.Thread(target=handle_client, args=(drone_id, client_socket))
         client_thread.start()
-
         if keyboard.is_pressed('esc'):
             server_socket.close()
             print(f"Connection to drone {drone_id} closed.")
             break
+
+        # Toggle to the next drone ID (0 or 1)
+        drone_id = 1 if drone_id == 0 else 0
 
 
 if __name__ == "__main__":
