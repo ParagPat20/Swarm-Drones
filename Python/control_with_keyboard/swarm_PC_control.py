@@ -3,6 +3,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 import keyboard
+import json
 from ttkthemes import ThemedStyle
 
 # Create a dictionary to store the drone control values
@@ -82,7 +83,7 @@ def handle_client(drone_id, client_socket):
     while True:
         try:
             # Send C dictionary values for the selected drone(s)
-            c_str = str(C)
+            c_str = json.dumps(C)
             client_socket.send(c_str.encode())
             controller(drone_id)
         except KeyboardInterrupt:
