@@ -64,34 +64,39 @@ def controller():
     if keyboard.is_pressed('r'):
         C['Mode'] = 'RTL'
 
-def set_control(drone_id):
-    C['Drone'] = drone_id
+    if keyboard.is_pressed('v'):
+        C['Drone'] = 1
+    if keyboard.is_pressed('b'):
+        C['Drone'] = 2
+    if keyboard.is_pressed('h'):
+        C['mstart'] = True
 
-def init(client_socket,drone_id):
-    global P, C
-    c_str = str(C)
-    client_socket.send(c_str.encode())
-    set_control(drone_id = drone_id)
-    p_str = client_socket.recv(1024).decode()
-    P = eval(p_str)
+def PC_SERVER_start():
+    # Define server socket parameters
+    server_ip = '0.0.0.0'  # Listen on all available network interfaces
+    server_port = 12345  # Choose a port for communication
 
-def PC_Server(drone_id):
-    server_ip = '0.0.0.0'
-    server_port = 12345 + drone_id
-
+    # Create a socket object and bind it to the server address
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((server_ip, server_port))
-    server_socket.listen()
-    print(f"Server for drone {drone_id} is listening for connections...")
 
+    # Listen for incoming connections
+    server_socket.listen()
+    print(f"Server for drone is listening for connections...")
     while True:
         client_socket, client_address = server_socket.accept()
-        print(f"Connected to drone {drone_id}: {client_address}")\
-        
-        client_thread = threading.Thread(target=init, args=(client_socket,drone_id))  # Wrap client_socket in a tuple
+        print(f"Connected to drone : {client_address}")
+
+        # Start a new thread to handle client communication
+        client_thread = threading.Thread(target=handle_client, args=(client_socket))
         client_thread.start()
-for drone_id in range(2):
-    # Start the server for each drone in a separate thread
-    server_thread = threading.Thread(target=PC_Server, args=(drone_id,))
-    server_thread.daemon = True
-    server_thread.start()
+
+def handle_client(client_socket):
+    global P, C
+    while True:
+        c_str = str(C)
+        client_socket.send(c_str.encode())
+
+server_thread = threading.Thread(target=PC_SERVER_start, args=(0,))
+server_thread.daemon = True
+server_thread.start()
