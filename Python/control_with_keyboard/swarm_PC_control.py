@@ -85,7 +85,7 @@ def handle_client(drone_id, client_socket):
         try:
             # Send C dictionary values for the selected drone(s)
             c_str = json.dumps(C).encode()
-            client_socket.sendall(c_str)
+            client_socket.send(c_str)
             controller(drone_id)
             time.sleep(0.5)
         except KeyboardInterrupt:
@@ -127,12 +127,12 @@ def controller(drone_id):
     else:
         C['vz'] = 0
 
-    if keyboard.is_pressed('m') and C['Arming'] == 0:
+    if keyboard.is_pressed('m'):
         C['Arming'] = 1
     else:
         C['Arming'] = 0
 
-    if keyboard.is_pressed('n') and C['Arming'] == 1 and C['vz'] < 1:
+    if keyboard.is_pressed('n'):
         C['Takeoff'] = 1
     else:
         C['Takeoff'] = 0
