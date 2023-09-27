@@ -15,7 +15,8 @@ C = {
     'vz': 0, 
     'Arming': 0, 
     'Mode': 'GUIDED',
-    'Takeoff': 0
+    'Takeoff': 0,
+    'gotoon' : 0
     }
 
 P = {
@@ -28,7 +29,9 @@ P = {
         'MODE': None,
         'VelocityX': 0,
         'VelocityY': 0,
-        'VelocityZ': 0
+        'VelocityZ': 0,
+        'lat' : 0,
+        'lon' : 0
         },
     'Drone':{
         'Batt' : 0,
@@ -39,7 +42,9 @@ P = {
         'MODE': None,
         'VelocityX': 0,
         'VelocityY': 0,
-        'VelocityZ': 0
+        'VelocityZ': 0,
+        'lat' : 0,
+        'lon' : 0
     }
     }
 
@@ -237,6 +242,10 @@ def controller(drone_id):
         C['Mode'] = 'RTL'
     if keyboard.is_pressed('z'):
         C['Mode'] = 'STABILIZE'
+    if keyboard.is_pressed('t'):
+        C['gotoon'] = 1
+    else:
+        C['gotoon'] = 0
 
 def PC_SERVER_start(drone_id):
     global P,C
