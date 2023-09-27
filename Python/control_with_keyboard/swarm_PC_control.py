@@ -231,12 +231,12 @@ def controller(drone_id):
         C['Mode'] = 'GUIDED'
     if keyboard.is_pressed('p'):
         C['Mode'] = 'POSHOLD'
-
     if keyboard.is_pressed('h'):
         C['Mode'] = 'AUTOTUNE'
-    
     if keyboard.is_pressed('r'):
         C['Mode'] = 'RTL'
+    if keyboard.is_pressed('z'):
+        C['Mode'] = 'STABILIZE'
 
 def PC_SERVER_start(drone_id):
     global P,C
