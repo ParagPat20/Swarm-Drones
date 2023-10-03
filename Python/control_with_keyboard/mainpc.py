@@ -136,9 +136,10 @@ def control_drone(remote_host):
 
 def change_drone_id(new_id):
     global Drone_ID
+    global remote_host
     Drone_ID = new_id
     print(f"Drone_ID changed to {new_id}")
-    ClientSendMode(Drone_ID)
+    ClientSendMode(remote_host,Drone_ID)
 
 def update_gui_label_thread(status_port, label):
     update_gui_thread = threading.Thread(target=update_gui_label, args=(status_port, label))
