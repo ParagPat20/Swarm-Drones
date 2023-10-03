@@ -7,7 +7,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 
 local_host = '0.0.0.0'
-remote_host = '192.168.14.101'
+remote_host = '192.168.22.101'
 mode_port = 60001
 ctrl_port = 60003
 status_port = [60002, 60004, 60006, 60008]
@@ -44,7 +44,8 @@ def ModeControl(remote_host):
     if keyboard.is_pressed('v'):
         ClientSendMode(remote_host, 'squarevel')
 
-def ClientRecvStatus(remote_host, status_port):
+def ClientRecvStatus(status_port):
+    global remote_host
     client_socket = socket.socket()
     client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
@@ -107,7 +108,7 @@ def ctrl():
 def update_gui_label(status_port, label):
     while True:
         try:
-            status_data = ClientRecvStatus(remote_host, status_port)
+            status_data = ClientRecvStatus(status_port)
             if status_data:
                 formatted_status = (
                     f"Battery Voltage: {status_data[0]}\n"
@@ -125,7 +126,7 @@ def update_gui_label(status_port, label):
         except Exception as e:
             print(f"Error in update_gui_label: {str(e)}")
 
-def control_drone():
+def control_drone(remote_host):
     while True:
         if keyboard.is_pressed('m') or keyboard.is_pressed('n') or keyboard.is_pressed('l') or keyboard.is_pressed('b'):
             ModeControl(remote_host)
@@ -137,7 +138,7 @@ def change_drone_id(new_id):
     global Drone_ID
     Drone_ID = new_id
     print(f"Drone_ID changed to {new_id}")
-    ClientSendMode(remote_host, Drone_ID)
+    ClientSendMode(Drone_ID)
 
 def update_gui_label_thread(status_port, label):
     update_gui_thread = threading.Thread(target=update_gui_label, args=(status_port, label))
@@ -188,7 +189,7 @@ update_gui_label_thread(status_port[2], status_label_3)
 update_gui_label_thread(status_port[3], status_label_4)
 
 # Start a thread for controlling the drone
-control_thread = threading.Thread(target=control_drone)
+control_thread = threading.Thread(target=control_drone, args=(remote_host,))
 control_thread.daemon = True
 control_thread.start()
 
