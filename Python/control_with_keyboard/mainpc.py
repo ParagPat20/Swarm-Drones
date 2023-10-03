@@ -31,10 +31,18 @@ def ModeControl(remote_host):
         ClientSendMode(remote_host, 'ARM')
     if keyboard.is_pressed('n'):
         ClientSendMode(remote_host, 'TakeOff')
+    if keyboard.is_pressed('t'):
+        ClientSendMode(remote_host, 'takeoff_all')
     if keyboard.is_pressed('l'):
         ClientSendMode(remote_host, 'LAND')
     if keyboard.is_pressed('b'):
-        ClientSendMode(remote_host, 'Stop')
+        ClientSendMode(remote_host, 'land_all')
+    if keyboard.is_pressed('k'):
+        ClientSendMode(remote_host, 'square')
+    if keyboard.is_pressed('p'):
+        ClientSendMode(remote_host, 'POSHOLD')
+    if keyboard.is_pressed('v'):
+        ClientSendMode(remote_host, 'squarevel')
 
 def ClientRecvStatus(remote_host, status_port):
     client_socket = socket.socket()
