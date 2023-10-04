@@ -80,7 +80,7 @@ def ClientSendCtrl(remote_host):
     client_socket.send(ctrl().encode())  # Encode the string as bytes before sending
 
 def ctrl():
-    Velocity = 1
+    Velocity = 0.5
 
     if keyboard.is_pressed('w'):
         x = str(Velocity)
