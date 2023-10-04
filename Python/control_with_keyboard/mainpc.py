@@ -6,8 +6,8 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
-local_host = '192.168.22.122'
-remote_host = '192.168.22.122'
+local_host = '192.168.155.101'
+remote_host = '192.168.155.101'
 mode_port = 60001
 ctrl_port = 60003
 status_port = [60002, 60004, 60006, 60008]
@@ -31,18 +31,20 @@ def ModeControl(remote_host):
         ClientSendMode(remote_host, 'ARM')
     if keyboard.is_pressed('n'):
         ClientSendMode(remote_host, 'TakeOff')
-    if keyboard.is_pressed('t'):
-        ClientSendMode(remote_host, 'takeoff_all')
+    if keyboard.is_pressed('o'):
+        ClientSendMode(remote_host, 'takeoff')
     if keyboard.is_pressed('l'):
         ClientSendMode(remote_host, 'LAND')
     if keyboard.is_pressed('b'):
         ClientSendMode(remote_host, 'land_all')
-    if keyboard.is_pressed('k'):
-        ClientSendMode(remote_host, 'square')
     if keyboard.is_pressed('p'):
         ClientSendMode(remote_host, 'POSHOLD')
     if keyboard.is_pressed('v'):
-        ClientSendMode(remote_host, 'squarevel')
+        ClientSendMode(remote_host, 'square')
+    if keyboard.is_pressed('k'):
+        ClientSendMode(remote_host, 'line')
+    if keyboard.is_pressed('c'):
+        ClientSendMode(remote_host, 'tri')
 
 def ClientRecvStatus(status_port):
     global remote_host
@@ -128,8 +130,7 @@ def update_gui_label(status_port, label):
 
 def control_drone(remote_host):
     while True:
-        if keyboard.is_pressed('m') or keyboard.is_pressed('n') or keyboard.is_pressed('l') or keyboard.is_pressed('b'):
-            ModeControl(remote_host)
+        ModeControl(remote_host)
         if keyboard.is_pressed('w') or keyboard.is_pressed('s') or keyboard.is_pressed('a') or keyboard.is_pressed('d') or keyboard.is_pressed('u') or keyboard.is_pressed('j'):
             ClientSendCtrl(remote_host)
         time.sleep(1)
