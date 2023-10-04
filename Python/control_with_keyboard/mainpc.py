@@ -59,9 +59,9 @@ def ClientRecvStatus(status_port):
     status_str = status_bytes.decode()  # Decode bytes to a string
     status_data = status_str.split(',')
 
-    if len(status_data) == 10:
-        b, gs, md, vx, vy, vz, gps, lat, lon, alt = status_data
-        return [float(b), float(gs), str(md), str(vx), str(vy), str(vz), int(gps), float(lat), float(lon), float(alt)]
+    if len(status_data) == 11:
+        b, gs, md, vx, vy, vz, gps, lat, lon, alt, armed = status_data
+        return [float(b), float(gs), str(md), str(vx), str(vy), str(vz), int(gps), float(lat), float(lon), float(alt), str(armed)]
     else:
         print('Received invalid status data:', status_data)
         return []  # Handle the case when the received data doesn't match the expected format
