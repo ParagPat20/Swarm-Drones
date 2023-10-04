@@ -7,7 +7,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 
 local_host = '192.168.155.122'
-remote_host = '192.168.155.122'
+remote_host = '192.168.155.101'
 mode_port = 60001
 ctrl_port = 60003
 status_port = [60002, 60004, 60006, 60008]
