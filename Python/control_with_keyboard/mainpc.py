@@ -6,8 +6,8 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
-local_host = '192.168.155.101'
-remote_host = '192.168.155.101'
+local_host = '192.168.155.122'
+remote_host = '192.168.155.122'
 mode_port = 60001
 ctrl_port = 60003
 status_port = [60002, 60004, 60006, 60008]
@@ -122,7 +122,8 @@ def update_gui_label(status_port, label):
                     f"GPS Fix Type: {status_data[6]}\n"
                     f"Latitude: {status_data[7]}\n"
                     f"Longitude: {status_data[8]}\n"
-                    f"Altitude: {status_data[9]}"
+                    f"Altitude: {status_data[9]}\n"
+                    f"Armed: {status_data[10]}"
                 )
                 label.config(text=formatted_status)
         except Exception as e:
@@ -167,6 +168,7 @@ status_label_3.grid(row=0, column=2, padx=10)
 
 status_label_4 = ttk.Label(status_frame, text="", font=("Helvetica", 12))
 status_label_4.grid(row=0, column=3, padx=10)
+
 
 # Create a frame for the drone selection buttons
 button_frame = ttk.Frame(root)
