@@ -7,7 +7,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 
 local_host = '192.168.155.122'
-remote_host = '192.168.155.101'
+remote_host = '192.168.155.122'
 mode_port = 60001
 ctrl_port = 60003
 status_port = [60002, 60004, 60006, 60008]
@@ -43,8 +43,10 @@ def ModeControl(remote_host):
         ClientSendMode(remote_host, 'square')
     if keyboard.is_pressed('k'):
         ClientSendMode(remote_host, 'line')
-    if keyboard.is_pressed('c'):
+    if keyboard.is_pressed('x'):
         ClientSendMode(remote_host, 'tri')
+    if keyboard.is_pressed('c'):
+        ClientSendMode(remote_host, 'circle')
 
 def ClientRecvStatus(status_port):
     global remote_host
@@ -169,6 +171,8 @@ status_label_3.grid(row=0, column=2, padx=10)
 status_label_4 = ttk.Label(status_frame, text="", font=("Helvetica", 12))
 status_label_4.grid(row=0, column=3, padx=10)
 
+info_label = ttk.Label(root, text="Press 'm' for ARM, 'n' for TakeOff, 'o' for takeoff, etc.", font=("Helvetica", 10))
+info_label.pack(pady=10)
 
 # Create a frame for the drone selection buttons
 button_frame = ttk.Frame(root)
@@ -185,6 +189,26 @@ button_mcu.grid(row=0, column=0, padx=10)
 button_cd1.grid(row=0, column=1, padx=10)
 button_cd2.grid(row=0, column=2, padx=10)
 button_cd3.grid(row=0, column=3, padx=10)
+
+info_text = (
+    "Key-Action Mappings:\n"
+    "'m' for ARM\n"
+    "'o' for TakeOff\n"
+    "'n' for TakeOff individually\n"
+    "'b' for land_all\n"
+    "'p' for POSHOLD\n"
+    "'v' for square\n"
+    "'k' for line\n"
+    "'x' for tri\n"
+    "'c' for circle\n\n\n"
+    "'w' for forward\n"
+    "'s' for backward\n"
+    "'a' for left\n"
+    "'d' for right\n"
+    "'u' for up\n"
+    "'j' for down"
+)
+info_label.config(text=info_text)
 
 # Start threads to update the GUI labels
 update_gui_label_thread(status_port[0], status_label)
