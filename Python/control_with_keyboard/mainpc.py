@@ -6,11 +6,11 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
-local_host = '192.168.155.122'
-remote_host = '192.168.155.122'
-mode_port = 60001
+local_host = '192.168.155.101'
+remote_host = '192.168.155.101'
+mode_port = 12345
 ctrl_port = 60003
-status_port = [60002, 60004, 60006, 60008]
+status_port = [60002, 60004]
 Drone_ID = 'D0'
 
 def ClientSendMode(remote_host, cmd_str):
@@ -213,8 +213,6 @@ info_label.config(text=info_text)
 # Start threads to update the GUI labels
 update_gui_label_thread(status_port[0], status_label)
 update_gui_label_thread(status_port[1], status_label_2)
-update_gui_label_thread(status_port[2], status_label_3)
-update_gui_label_thread(status_port[3], status_label_4)
 
 # Start a thread for controlling the drone
 control_thread = threading.Thread(target=control_drone, args=(remote_host,))
