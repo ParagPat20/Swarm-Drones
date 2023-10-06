@@ -6,8 +6,8 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
-local_host = '192.168.155.101'
-remote_host = '192.168.155.101'
+local_host = '192.168.155.122'
+remote_host = '192.168.155.122'
 mode_port = 12345
 ctrl_port = 60003
 status_port = [60002, 60004]
