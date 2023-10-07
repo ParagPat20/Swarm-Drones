@@ -212,7 +212,7 @@ info_label.config(text=info_text)
 
 # Start threads to update the GUI labels
 update_gui_label_thread(status_port[0], status_label)
-update_gui_label_thread(status_port[1], status_label_2)
+# update_gui_label_thread(status_port[1], status_label_2)
 
 # Start a thread for controlling the drone
 control_thread = threading.Thread(target=control_drone, args=(remote_host,))
