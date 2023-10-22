@@ -69,33 +69,28 @@ try:
         # Detect and classify color balls in the frame
         balls = detect_and_classify_color_balls(frame)
 
-        # Select the ball with the shortest distance from the center
-        closest_ball = min(balls, key=lambda ball: abs(ball["x_distance"]) + abs(ball["y_distance"]))
+        if balls:
+            # Select the ball with the shortest distance from the center
+            closest_ball = min(balls, key=lambda ball: abs(ball["x_distance"]) + abs(ball["y_distance"]))
 
-        center, radius, color, x_distance, y_distance = closest_ball["center"], closest_ball["radius"], closest_ball["color"], closest_ball["x_distance"], closest_ball["y_distance"]
+            center, radius, color, x_distance, y_distance = closest_ball["center"], closest_ball["radius"], closest_ball["color"], closest_ball["x_distance"], closest_ball["y_distance"]
 
-        # Draw a circle around the selected ball
-        cv2.circle(frame, center, radius, (0, 0, 255), 2)
+            # Annotate the selected ball with its color and distance
+            print(f"Selected Ball: {color} (X: {int(x_distance)}, Y: {int(y_distance)})")
 
-        # Annotate the selected ball with its color and distance
-        cv2.putText(frame, f"{color} (X: {int(x_distance)}, Y: {int(y_distance)})", center, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            # Suggest camera movements to center the selected ball
+            if abs(x_distance) > 20:
+                if x_distance < 0:
+                    print("Move the camera to the Left")
+                else:
+                    print("Move the camera to the Right")
+            if abs(y_distance) > 20:
+                if y_distance < 0:
+                    print("Move the camera down")
+                else:
+                    print("Move the camera up")
 
-        # Suggest camera movements to center the selected ball
-        if abs(x_distance) > 20:
-            if x_distance < 0:
-                print("Move the camera to the right")
-            else:
-                print("Move the camera to the left")
-        if abs(y_distance) > 20:
-            if y_distance < 0:
-                print("Move the camera down")
-            else:
-                print("Move the camera up")
-        
 
-        # Display the video feed with the selected and classified color ball
-        cv2.imshow('Video Feed', frame)
-        cv2.waitKey(1)
 except Exception as e:
     print("Error:", e)
 
