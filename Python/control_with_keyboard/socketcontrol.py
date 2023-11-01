@@ -5,7 +5,7 @@ import numpy as np
 
 # Create a socket client
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.12.122', 8888))  # Replace with your Raspberry Pi's IP address
+client_socket.connect(('192.168.12.122', 8000))  # Replace with your Raspberry Pi's IP address
 
 connection = client_socket.makefile('rb')
 
