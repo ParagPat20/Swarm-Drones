@@ -1,7 +1,7 @@
 import socket
 import struct
-from PIL import Image
-import io
+import cv2
+import numpy as np
 
 # Create a socket client
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,11 +17,18 @@ try:
         # Read the image data from the server
         image_data = connection.read(image_len)
 
-        # Convert the image data to a Pillow image
-        image = Image.open(io.BytesIO(image_data))
+        # Convert the image data to a NumPy array
+        image_array = np.frombuffer(image_data, dtype=np.uint8)
 
-        # Display the image
-        image.show()
+        # Decode the image as a color image (you may need to adjust the format)
+        image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+
+        # Display the image using OpenCV
+        cv2.imshow('Video Stream', image)
+
+        # Press 'q' to quit the video stream
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 except KeyboardInterrupt:
     pass
@@ -29,3 +36,4 @@ except KeyboardInterrupt:
 finally:
     connection.close()
     client_socket.close()
+    cv2.destroyAllWindows()
