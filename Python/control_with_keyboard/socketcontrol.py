@@ -20,9 +20,6 @@ try:
         # Read the image data from the server
         image_data = connection.read(image_len)
 
-        if not image_data:
-            break  # Break the loop if no image data is received
-
         # Convert the image data to a NumPy array
         image_array = np.frombuffer(image_data, dtype=np.uint8)
 
@@ -38,7 +35,6 @@ try:
 except KeyboardInterrupt:
     pass
 
-finally:
-    connection.close()
-    client_socket.close()
-    cv2.destroyAllWindows()
+except Exception as e:
+    print(e)
+
